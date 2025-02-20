@@ -1,9 +1,9 @@
-package com.example.Monster;
+package com.example.domain.Monster;
 
 
-import com.example.Direction;
-import com.example.Entity;
-import com.example.Position;
+import com.example.domain.Direction;
+import com.example.domain.Entity;
+import com.example.domain.Position;
 
 import java.util.Random;
 

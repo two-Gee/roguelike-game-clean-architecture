@@ -7,7 +7,7 @@
     <artifactId>roguelike-game-clean-architecture</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>com.example</groupId>
+  <groupId>com.example.plugins</groupId>
   <artifactId>0-plugins</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>0-plugins</name>
@@ -20,7 +20,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.example</groupId>
+      <groupId>com.example.adapters</groupId>
       <artifactId>1-adapters</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>

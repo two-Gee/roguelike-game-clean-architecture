@@ -1,15 +1,12 @@
-package com.example;
+package com.example.application;
 
-import domain.Dungeon;
-import domain.GameState;
-import domain.Player;
+import com.example.domain.GameState;
+import com.example.domain.Player;
 
 public class GameService {
 
-    private Dungeon dungeon;
     private GameState gameState;
     private Player player;
-
     public void handleMonsterMovement(){
         
     }

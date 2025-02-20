@@ -1,4 +1,4 @@
-package com.example.Item;
+package com.example.domain.Item;
 
 public enum ItemTypes {
     POTION,

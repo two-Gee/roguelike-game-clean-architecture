@@ -1,4 +1,4 @@
-package com.example.Monster;
+package com.example.domain.Monster;
 
 public enum MonsterTypes {
     GOBLIN,

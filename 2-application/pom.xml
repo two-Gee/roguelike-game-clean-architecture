@@ -7,7 +7,6 @@
     <artifactId>roguelike-game-clean-architecture</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>com.example</groupId>
   <artifactId>2-application</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>2-application</name>

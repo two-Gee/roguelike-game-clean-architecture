@@ -1,8 +1,7 @@
-package com.example;
+package com.example.domain;
 
-import com.example.Monster.MonsterFactory;
 
-import java.util.Random;
+
 
 public class Dungeon {
     private int level;

@@ -1,4 +1,4 @@
-package com.example;
+package com.example.adapters;
 
 public enum TileType {
 
@@ -7,7 +7,5 @@ public enum TileType {
     PLAYER,
     ITEM,
     MONSTER
-
-
 
 }

@@ -1,4 +1,4 @@
-package com.example.Item;
+package com.example.domain.Item;
 
 public class Weapon extends Item {
     private int damage;

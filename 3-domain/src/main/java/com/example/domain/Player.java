@@ -1,14 +1,14 @@
-package com.example;
+package com.example.domain;
 
-import com.example.Item.Item;
+import com.example.domain.Item.Item;
 
 public class Player extends Entity {
     private int health;
     private int attack;
     private Item equippedWeapon;
 
-    public Player(int health, int attack, char symbol, TileType tileType) {
-        super(tileType,  symbol);
+    public Player(int health, int attack, char symbol) {
+        super();
         this.health = health;
         this.attack = attack;
     }
