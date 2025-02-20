@@ -20,7 +20,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.example.adapters</groupId>
+      <groupId>com.example</groupId>
       <artifactId>1-adapters</artifactId>
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
