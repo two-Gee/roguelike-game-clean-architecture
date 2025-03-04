@@ -1,5 +1,13 @@
 package com.example.domain;
 
-public class Inventory {
+import com.example.domain.Item.Consumables;
+import com.example.domain.Item.Weapon;
 
+import java.util.List;
+
+public class Inventory {
+    List<Consumables> consumables;
+    int capacity;
+    Weapon equippedWeapon;
+    int coins;
 }
