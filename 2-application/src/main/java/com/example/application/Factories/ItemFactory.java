@@ -1,4 +1,9 @@
-package com.example.domain.Item;
+package com.example.application.Factories;
+
+import com.example.domain.Item.Consumables;
+import com.example.domain.Item.Item;
+import com.example.domain.Item.ItemTypes;
+import com.example.domain.Item.Weapon;
 
 public class ItemFactory {
     public Item createItem(ItemTypes type) {
