@@ -31,6 +31,14 @@ public class Dungeon {
         this.playerSpawnPoint = playerSpawnPoint;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public Position getPlayerSpawnPoint() {
         return playerSpawnPoint;
     }
@@ -38,5 +46,9 @@ public class Dungeon {
     public int getRemainingEnemies() {
         //TODO checken ob remaining enemies ein eigener count sein sollte oder einfach aus der Liste der Entities berechnet wird
         return remainingEnemies;
+    }
+
+    public DungeonTile getTile(Position position) {
+        return dungeonTiles[position.getyPos()][position.getxPos()];
     }
 }
