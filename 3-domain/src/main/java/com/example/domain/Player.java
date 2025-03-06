@@ -2,13 +2,13 @@ package com.example.domain;
 
 import com.example.domain.Item.Item;
 
-public class Player extends Entity {
+public class Player extends LivingEntity {
     private int health;
     private int attack;
     private Item equippedWeapon;
 
     public Player(int health, int attack, char symbol) {
-        super();
+        super(health, attack);
         this.health = health;
         this.attack = attack;
     }
