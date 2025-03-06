@@ -1,33 +1,18 @@
 package com.example.domain;
 
 import com.example.domain.Item.Item;
+import com.example.domain.Monster.Monster;
 
-public class Player extends Entity {
-    private int health;
-    private int attack;
+import java.util.List;
+
+public class Player extends LivingEntity {
     private Item equippedWeapon;
 
-    public Player(int health, int attack, char symbol) {
-        super();
-        this.health = health;
-        this.attack = attack;
+    public Player(int health, int attack) {
+        super(health, attack);
     }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getAttack() {
-        return this.attack;
-    }
-
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public void setAttack(int attack) {
-        this.attack = attack;
-    }
-
+//    public void moveInDirection(Direction direction) {
+//        Position newPosition = new Position(this.getPosition().getxPos(), this.getPosition().getyPos());
+//        this.move(newPosition);
+//    }
 }
