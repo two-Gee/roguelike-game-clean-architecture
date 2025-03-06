@@ -3,6 +3,10 @@
   <groupId>com.example</groupId>
   <artifactId>roguelike-game-clean-architecture</artifactId>
   <packaging>pom</packaging>
+  <properties>
+    <maven.compiler.source>23</maven.compiler.source>
+    <maven.compiler.target>23</maven.compiler.target>
+  </properties>
   <version>1.0-SNAPSHOT</version>
   <name>roguelike-game-clean-architecture</name>
   <url>http://maven.apache.org</url>

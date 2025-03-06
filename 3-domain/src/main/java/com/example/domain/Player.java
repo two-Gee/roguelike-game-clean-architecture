@@ -3,7 +3,6 @@ package com.example.domain;
 import com.example.domain.Item.Item;
 import com.example.domain.Monster.Monster;
 
-import java.util.List;
 
 public class Player extends LivingEntity {
     private Item equippedWeapon;
