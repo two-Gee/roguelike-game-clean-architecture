@@ -1,10 +1,13 @@
 package com.example.domain;
 
+import java.util.UUID;
+
 public class LivingEntity {
     private Position position;
     private int health;
     private int attack;
     private boolean isDead;
+    private UUID roomID;
 
     public LivingEntity(int health, int attack) {
         this.position = new Position(0, 0);
