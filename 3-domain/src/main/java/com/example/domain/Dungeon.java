@@ -1,9 +1,11 @@
 package com.example.domain;
 
 
+import com.example.domain.map.DungeonRoom;
 import com.example.domain.map.DungeonTile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class Dungeon {
@@ -15,11 +17,13 @@ public class Dungeon {
     private DungeonTile[][] dungeonTiles;
     private int width;
     private int height;
+    private Map<Integer, DungeonRoom> dungeonRooms;
+
     private List<LivingEntity> entities;
     private Position playerSpawnPoint;
 
 // TODO add items, level and difficulty
-    public Dungeon(int enemyAmount, DungeonTile[][] dungeonTiles, int width, int height, List<LivingEntity> entities, Position playerSpawnPoint) {
+    public Dungeon(int enemyAmount, DungeonTile[][] dungeonTiles, int width, int height, List<LivingEntity> entities, Map<Integer, DungeonRoom> dungeonRooms, Position playerSpawnPoint) {
 //        this.level = level;
 //        this.difficulty = difficulty;
         this.enemyAmount = enemyAmount;
@@ -29,6 +33,7 @@ public class Dungeon {
         this.width = width;
         this.height = height;
         this.entities = entities;
+        this.dungeonRooms = dungeonRooms;
         this.playerSpawnPoint = playerSpawnPoint;
     }
 
@@ -58,4 +63,7 @@ public class Dungeon {
         return dungeonTiles[position.getxPos()][position.getyPos()];
     }
 
+    public DungeonRoom getRoomByRoomNumber(int roomNumber) {
+        return dungeonRooms.get(roomNumber);
+    }
 }

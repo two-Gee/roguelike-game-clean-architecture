@@ -7,15 +7,15 @@ import com.example.domain.map.DungeonConfiguration;
 import com.example.domain.map.DungeonRoom;
 import com.example.domain.map.DungeonTile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class DungeonGenerator {
     private DungeonTile[][] dungeonTiles;
     private DungeonConfiguration dungeonConfiguration;
     private Position playerSpawnPoint;
     private Random rand = new Random();
+    private Map<Integer, DungeonRoom> dungeonRooms = new HashMap<>();
+
 
     public DungeonGenerator(DungeonConfiguration dungeonConfiguration) {
         this.dungeonConfiguration = dungeonConfiguration;
@@ -40,13 +40,11 @@ public class DungeonGenerator {
 
         generator.generateRooms();
 
-        return new Dungeon(livingEntities.size() - 1, generator.dungeonTiles, conf.getWidth(), conf.getHeight(), livingEntities, generator.getPlayerSpawnPoint());
+        return new Dungeon(livingEntities.size() - 1, generator.dungeonTiles, conf.getWidth(), conf.getHeight(), livingEntities, generator.dungeonRooms, generator.getPlayerSpawnPoint());
 
     }
 
     private void generateRooms() {
-        List<DungeonRoom> dungeonRooms = new ArrayList<DungeonRoom>();
-
         int numRooms = rand.nextInt(dungeonConfiguration.getMaxRooms() - dungeonConfiguration.getMinRooms() + 1) + dungeonConfiguration.getMinRooms();
         int count = 0;
 
@@ -60,7 +58,7 @@ public class DungeonGenerator {
             int x = rand.nextInt(dungeonConfiguration.getWidth() - width);
             int y = rand.nextInt(dungeonConfiguration.getHeight() - height);
             
-            DungeonRoom room = new DungeonRoom(x, y, width, height);
+            DungeonRoom room = new DungeonRoom(x, y, width, height, count);
 
             // Check if room is first room
             if(dungeonRooms.isEmpty()) {
@@ -68,14 +66,14 @@ public class DungeonGenerator {
                 playerSpawnPoint = room.getRoomCenter();
 
                 generateRoom(room, dungeonRooms, false);
-                dungeonRooms.add(room);
+                dungeonRooms.put(count, room);
                 count++;
             }
             else {
                 // Check if room intersects one of the previously generated rooms
                 boolean intersects = false;
-                for (DungeonRoom other : dungeonRooms) {
-                    if(room.intersectsOtherRoom(other)) {
+                for (Map.Entry<Integer, DungeonRoom> entry : dungeonRooms.entrySet()) {
+                    if(room.intersectsOtherRoom(entry.getValue())) {
                         intersects = true;
                         break;
                     }
@@ -83,14 +81,14 @@ public class DungeonGenerator {
                 
                 if(!intersects) {
                     generateRoom(room, dungeonRooms, true );
-                    dungeonRooms.add(room);
+                    dungeonRooms.put(count, room);
                     count++;
                 }
             }
         }
     }
 
-    private void generateRoom(DungeonRoom room, List<DungeonRoom> dungeonRooms, boolean spawnMonsters) {
+    private void generateRoom(DungeonRoom room, Map<Integer, DungeonRoom> dungeonRooms, boolean spawnMonsters) {
         // Carve room in the map
         for (int y = room.getTopLeftCorner().getyPos() + 1; y < room.getBottomRightCorner().getyPos(); y++) {
             for (int x = room.getTopLeftCorner().getxPos() + 1; x < room.getBottomRightCorner().getxPos(); x++) {
