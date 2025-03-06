@@ -24,4 +24,8 @@ public class Position {
     public void setyPos(int yPos) {
         this.yPos = yPos;
     }
+
+    public boolean equals(Position position) {
+        return this.xPos == position.getxPos() && this.yPos == position.getyPos();
+    }
 }

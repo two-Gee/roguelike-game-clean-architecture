@@ -22,4 +22,8 @@ public enum DungeonTile {
         this.walkable = walkable;
         this.blocksSight = !walkable;
     }
+
+    public boolean isWalkable() {
+        return walkable;
+    }
 }
