@@ -4,6 +4,7 @@ package com.example.domain;
 import com.example.domain.map.DungeonTile;
 
 import java.util.List;
+import java.util.UUID;
 
 public class Dungeon {
 //    private int level;
@@ -48,7 +49,13 @@ public class Dungeon {
         return remainingEnemies;
     }
 
-    public DungeonTile getTile(Position position) {
-        return dungeonTiles[position.getyPos()][position.getxPos()];
+
+    public boolean isWalkable(Position position){
+        return getTile(position).isWalkable();
     }
+
+    public DungeonTile getTile(Position position){
+        return dungeonTiles[position.getxPos()][position.getyPos()];
+    }
+
 }

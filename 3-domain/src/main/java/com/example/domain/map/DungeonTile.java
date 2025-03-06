@@ -32,4 +32,9 @@ public enum DungeonTile {
     }
 
     public enum TileColorType { Primary, Secondary }
+
+    public boolean isWalkable() {
+        return walkable;
+    }
+
 }
