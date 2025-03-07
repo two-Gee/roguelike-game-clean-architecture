@@ -60,7 +60,7 @@ public class Dungeon {
     }
 
     public DungeonTile getTile(Position position){
-        return dungeonTiles[position.getxPos()][position.getyPos()];
+        return dungeonTiles[position.getyPos()][position.getxPos()];
     }
 
     public DungeonRoom getRoomByRoomNumber(int roomNumber) {
