@@ -2,6 +2,7 @@ package com.example.application.Factories;
 
 import com.example.domain.Dungeon;
 import com.example.domain.Monster.Monster;
+import com.example.domain.Monster.MonsterMovementType;
 import com.example.domain.Monster.MonsterTypes;
 
 import java.util.HashMap;
@@ -11,9 +12,9 @@ import java.util.UUID;
 public class MonsterFactory {
     public static Monster createMonster(MonsterTypes type, int roomID, Dungeon dungeon){
         return switch (type) {
-            case GOBLIN -> new Monster("Goblin", 10, 5, roomID, dungeon.getRandomPositionInRoom(roomID));
-            case ORC -> new Monster("Orc", 20, 10, roomID, dungeon.getRandomPositionInRoom(roomID));
-            case TROLL -> new Monster("Troll", 15, 8, roomID, dungeon.getRandomPositionInRoom(roomID));
+            case GOBLIN -> new Monster("Goblin", 10, 5, roomID, dungeon.getRandomPositionInRoom(roomID), MonsterMovementType.APPROACH);
+            case ORC -> new Monster("Orc", 15, 8, roomID, dungeon.getRandomPositionInRoom(roomID), MonsterMovementType.RANDOM);
+            case TROLL -> new Monster("Troll", 20, 10, roomID, dungeon.getRandomPositionInRoom(roomID), MonsterMovementType.STATIONARY);
             default -> throw new IllegalArgumentException();
         };
     }

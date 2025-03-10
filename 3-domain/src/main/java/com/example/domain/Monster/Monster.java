@@ -15,12 +15,13 @@ import java.util.UUID;
 public class Monster extends LivingEntity {
     private String name;
     private UUID id;
+    private MonsterMovementType movementType;
 
     public UUID getId() {
         return id;
     }
 
-    public Monster(String name, int health, int damage, int roomID, Position position) {
+    public Monster(String name, int health, int damage, int roomID, Position position, MonsterMovementType movementType) {
         super(health, damage, roomID, position);
         this.name = name;
         this.id = UUID.randomUUID();
