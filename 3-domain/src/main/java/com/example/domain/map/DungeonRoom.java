@@ -40,4 +40,8 @@ public class DungeonRoom {
                 topLeftCorner.getyPos() <= other.bottomRightCorner.getyPos() && bottomRightCorner.getyPos() >= other.topLeftCorner.getyPos();
     }
 
+    public boolean intersectsTunnelAt(Position position) {
+        return topLeftCorner.getxPos() + 1 <= position.getxPos() && bottomRightCorner.getxPos() - 1 >= position.getxPos() &&
+                topLeftCorner.getyPos() + 1 <= position.getyPos() && bottomRightCorner.getyPos() - 1 >= position.getyPos();
+    }
 }

@@ -47,13 +47,25 @@ public class DungeonGenerator {
     private void generateRooms() {
         int numRooms = rand.nextInt(dungeonConfiguration.getMaxRooms() - dungeonConfiguration.getMinRooms() + 1) + dungeonConfiguration.getMinRooms();
         int count = 0;
+        int minSize = dungeonConfiguration.getMinRoomSize();
+        int maxSize = dungeonConfiguration.getMaxRoomSize();
+
+        // Ensure min is even
+        if (minSize % 2 != 0) {
+            minSize++; // Make it even if it's odd
+        }
+
+        // Ensure max is even
+        if (maxSize % 2 != 0) {
+            maxSize--; // Make it even if it's odd
+        }
 
         // Generate rooms with random sizes and positions
         while (count < numRooms) {
             // Room size
-            int width = rand.nextInt(dungeonConfiguration.getMaxRoomSize() - dungeonConfiguration.getMinRoomSize() + 1) + dungeonConfiguration.getMinRoomSize();
-            int height = rand.nextInt(dungeonConfiguration.getMaxRoomSize() - dungeonConfiguration.getMinRoomSize() + 1) + dungeonConfiguration.getMinRoomSize();
-            
+            int width = rand.nextInt((maxSize - minSize) / 2 + 1) * 2 + minSize;
+            int height = rand.nextInt((maxSize - minSize) / 2 + 1) * 2 + minSize;
+
             // Room location
             int x = rand.nextInt(dungeonConfiguration.getWidth() - width);
             int y = rand.nextInt(dungeonConfiguration.getHeight() - height);
@@ -86,6 +98,16 @@ public class DungeonGenerator {
                 }
             }
         }
+
+        // If this is not the first room, connect to the previous
+        if(!dungeonRooms.isEmpty()) {
+            for (int i = 1; i < dungeonRooms.size(); i++) {
+                DungeonRoom prevRoom = dungeonRooms.get(i-1);
+                DungeonRoom currRoom = dungeonRooms.get(i);
+
+                connectRooms(currRoom, prevRoom);
+            }
+        }
     }
 
     private void generateRoom(DungeonRoom room, Map<Integer, DungeonRoom> dungeonRooms, boolean spawnMonsters) {
@@ -99,13 +121,6 @@ public class DungeonGenerator {
         if(spawnMonsters) {
             // TODO Monster spawning hinzufügen
         }
-
-        // If this is not the first room, connect to the previous
-        if(!dungeonRooms.isEmpty()) {
-            DungeonRoom prevRoom = dungeonRooms.get(dungeonRooms.size() - 1);
-            connectRooms(room, prevRoom);
-        }
-
     }
 
     private void connectRooms(DungeonRoom room, DungeonRoom prevRoom) {
@@ -113,31 +128,211 @@ public class DungeonGenerator {
         Position prevRoomCenter = prevRoom.getRoomCenter();
 
         if(rand.nextInt(2) == 1) {
-            generateHTunnel(prevRoomCenter.getxPos(), roomCenter.getxPos(), prevRoomCenter.getyPos());
-            generateVTunnel(prevRoomCenter.getyPos(), roomCenter.getyPos(), roomCenter.getxPos());
+            DungeonRoom startRoom = connectHorizontally(room, prevRoom, null);
+            connectVertically(room, prevRoom, startRoom);
+//            generateHTunnel(prevRoomCenter.getxPos(), roomCenter.getxPos(), prevRoomCenter.getyPos());
+//            generateVTunnel(prevRoomCenter.getyPos(), roomCenter.getyPos(), roomCenter.getxPos());
         } else {
-            generateVTunnel(prevRoomCenter.getyPos(), roomCenter.getyPos(), prevRoomCenter.getxPos());
-            generateHTunnel(prevRoomCenter.getxPos(), roomCenter.getxPos(), roomCenter.getyPos());
+//            generateVTunnel(prevRoomCenter.getyPos(), roomCenter.getyPos(), prevRoomCenter.getxPos());
+//            generateHTunnel(prevRoomCenter.getxPos(), roomCenter.getxPos(), roomCenter.getyPos());
+            DungeonRoom startRoom = connectVertically(room, prevRoom, null);
+            connectHorizontally(room, prevRoom, startRoom);
         }
     }
 
     // Carve a vertical tunnel between two rooms
-    private void generateVTunnel(int y1, int y2, int x1) {
-        int minY = Math.min(y1, y2);
-        int maxY = Math.max(y1, y2);
+//    private void generateVTunnel(int y1, int y2, int x1) {
+//        int minY = Math.min(y1, y2);
+//        int maxY = Math.max(y1, y2);
+//
+//        for (int y = minY; y <= maxY; y++) {
+//            this.dungeonTiles[y][x1] = DungeonTile.Floor;
+//        }
+//    }
+    // TODO: Merge into one function
+    // TODO: make sure second connection starts from different room
+    private DungeonRoom connectVertically(DungeonRoom currRoom, DungeonRoom prevRoom, DungeonRoom startRoom) {
+        Position currRoomCenter = currRoom.getRoomCenter();
+        Position prevRoomCenter = prevRoom.getRoomCenter();
+
+        int minY = Math.min(currRoomCenter.getyPos(), prevRoomCenter.getyPos());
+        int maxY = Math.max(currRoomCenter.getyPos(), prevRoomCenter.getyPos());
+
+        DungeonRoom tunnelStartRoom = null;
+        DungeonRoom tunnelEndRoom = null;
+        int x = 0;
+        if (startRoom != null){
+            tunnelStartRoom = startRoom;
+            x = startRoom.getRoomCenter().getxPos();
+        } else {
+            if (minY == currRoomCenter.getyPos()) {
+                x = currRoomCenter.getxPos();
+                tunnelStartRoom = currRoom;
+                tunnelEndRoom = prevRoom;
+            } else if (minY == prevRoomCenter.getyPos()){
+                x = prevRoomCenter.getxPos();
+                tunnelStartRoom = prevRoom;
+                tunnelEndRoom = currRoom;
+            }
+        }
 
         for (int y = minY; y <= maxY; y++) {
-            this.dungeonTiles[y][x1] = DungeonTile.Floor;
-        }
-    }
+            boolean intersects = false;
 
-    // Carve a horizontal tunnel between two rooms
-    private void generateHTunnel(int x1, int x2, int y1) {
-        int minX = Math.min(x1, x2);
-        int maxX = Math.max(x1, x2);
+            for (Map.Entry<Integer, DungeonRoom> entry : dungeonRooms.entrySet()) {
+                DungeonRoom room = entry.getValue();
+                if(room.equals(tunnelStartRoom)) {
+                    continue;
+                }
+
+                Position position = new Position(x, y);
+                if(room.intersectsTunnelAt(position)) {
+                    intersects = true;
+                    break;
+                }
+            }
+
+            if(!intersects){
+                this.dungeonTiles[y][x] = DungeonTile.Floor;
+            }
+        }
+
+        return tunnelEndRoom;
+    }
+    private DungeonRoom connectHorizontally(DungeonRoom currRoom, DungeonRoom prevRoom, DungeonRoom startRoom) {
+        Position currRoomCenter = currRoom.getRoomCenter();
+        Position prevRoomCenter = prevRoom.getRoomCenter();
+
+        int minX = Math.min(currRoomCenter.getxPos(), prevRoomCenter.getxPos());
+        int maxX = Math.max(currRoomCenter.getxPos(), prevRoomCenter.getxPos());
+
+        int y = 0;
+        DungeonRoom tunnelStartRoom = null;
+        DungeonRoom tunnelEndRoom = null;
+        if (startRoom != null){
+            tunnelStartRoom = startRoom;
+            y = startRoom.getRoomCenter().getyPos();
+        } else {
+            if (minX == currRoomCenter.getxPos()) {
+                y = currRoomCenter.getyPos();
+                tunnelStartRoom = currRoom;
+                tunnelEndRoom = prevRoom;
+            } else if (minX == prevRoomCenter.getxPos()){
+                y = prevRoomCenter.getyPos();
+                tunnelStartRoom = prevRoom;
+                tunnelEndRoom = currRoom;
+            }
+        }
 
         for (int x = minX; x <= maxX; x++) {
-            this.dungeonTiles[y1][x] = DungeonTile.Floor;
+            boolean intersects = false;
+
+            for (Map.Entry<Integer, DungeonRoom> entry : dungeonRooms.entrySet()) {
+                DungeonRoom room = entry.getValue();
+                if(room.equals(tunnelStartRoom)) {
+                    continue;
+                }
+
+                Position position = new Position(x, y);
+                if(room.intersectsTunnelAt(position)) {
+                    intersects = true;
+                    break;
+                }
+            }
+
+            if(!intersects){
+                this.dungeonTiles[y][x] = DungeonTile.Floor;
+            }
         }
+
+        return tunnelEndRoom;
     }
+
+//    private void connectVertically(DungeonRoom currRoom, DungeonRoom prevRoom) {
+//        Position currRoomCenter = currRoom.getRoomCenter();
+//        Position prevRoomCenter = prevRoom.getRoomCenter();
+//
+//        int minY = Math.min(currRoomCenter.getyPos(), prevRoomCenter.getyPos());
+//        int maxY = Math.max(currRoomCenter.getyPos(), prevRoomCenter.getyPos());
+//
+//        int x = 0;
+//        DungeonRoom tunnelStartRoom = null;
+//        if (minY == currRoomCenter.getyPos()) {
+//            x = currRoomCenter.getxPos();
+//            tunnelStartRoom = currRoom;
+//        } else if (minY == prevRoomCenter.getyPos()){
+//            x = prevRoomCenter.getxPos();
+//            tunnelStartRoom = prevRoom;
+//        }
+//
+//        for (int y = minY; y <= maxY; y++) {
+//            boolean intersects = false;
+//
+//            for (Map.Entry<Integer, DungeonRoom> entry : dungeonRooms.entrySet()) {
+//                DungeonRoom room = entry.getValue();
+//                if(room.equals(tunnelStartRoom)) {
+//                    continue;
+//                }
+//
+//                Position position = new Position(x, y);
+//                if(room.intersectsTunnelAt(position)) {
+//                    intersects = true;
+//                    break;
+//                }
+//            }
+//
+//            if(!intersects){
+//                this.dungeonTiles[y][x] = DungeonTile.Floor;
+//            }
+//        }
+//    }
+
+//    private void connectHorizontally(DungeonRoom currRoom, DungeonRoom prevRoom) {
+//        Position currRoomCenter = currRoom.getRoomCenter();
+//        Position prevRoomCenter = prevRoom.getRoomCenter();
+//
+//        int minX = Math.min(currRoomCenter.getxPos(), prevRoomCenter.getxPos());
+//        int maxX = Math.max(currRoomCenter.getxPos(), prevRoomCenter.getxPos());
+//
+//        int y = 0;
+//        DungeonRoom tunnelStartRoom = null;
+//        if (minX == currRoomCenter.getxPos()) {
+//            y = currRoomCenter.getyPos();
+//            tunnelStartRoom = currRoom;
+//        } else if (minX == prevRoomCenter.getxPos()){
+//            y = prevRoomCenter.getyPos();
+//            tunnelStartRoom = prevRoom;
+//        }
+//
+//        for (int x = minX; x <= maxX; x++) {
+//            boolean intersects = false;
+//
+//            for (Map.Entry<Integer, DungeonRoom> entry : dungeonRooms.entrySet()) {
+//                DungeonRoom room = entry.getValue();
+//                if(room.equals(tunnelStartRoom)) {
+//                    continue;
+//                }
+//
+//                Position position = new Position(x, y);
+//                if(room.intersectsTunnelAt(position)) {
+//                    intersects = true;
+//                    break;
+//                }
+//            }
+//
+//            if(!intersects){
+//                this.dungeonTiles[y][x] = DungeonTile.Floor;
+//            }
+//        }
+//    }
+
+    // Carve a horizontal tunnel between two rooms
+//    private void generateHTunnel(int x1, int x2, int y1) {
+//        int minX = Math.min(x1, x2);
+//        int maxX = Math.max(x1, x2);
+//
+//        for (int x = minX; x <= maxX; x++) {
+//            this.dungeonTiles[y1][x] = DungeonTile.Floor;
+//        }
+//    }
 }
