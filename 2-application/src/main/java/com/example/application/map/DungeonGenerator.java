@@ -44,7 +44,7 @@ public class DungeonGenerator {
 
     }
 
-    private void generateRooms() {
+    private List<DungeonRoom> generateRooms() {
         List<DungeonRoom> dungeonRooms = new ArrayList<DungeonRoom>();
 
         int numRooms = rand.nextInt(dungeonConfiguration.getMaxRooms() - dungeonConfiguration.getMinRooms() + 1) + dungeonConfiguration.getMinRooms();

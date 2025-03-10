@@ -6,12 +6,14 @@ import com.example.domain.Position;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class DungeonRoom {
     private Position topLeftCorner;
     private Position bottomRightCorner;
     private List<Item> items;
     private List<Monster> monsters;
+    private int getRoomID;
 
     public DungeonRoom(int x, int y, int width, int height) {
         topLeftCorner = new Position(x, y);
@@ -42,5 +44,14 @@ public class DungeonRoom {
 
     public void addItem(Item item) {
         items.add(item);
+    }
+
+    public int getGetRoomID() {
+        return getRoomID;
+    }
+
+    public boolean containsPosition(Position position){
+        return position.getxPos() >= topLeftCorner.getxPos() && position.getxPos() <= bottomRightCorner.getxPos() &&
+                position.getyPos() >= topLeftCorner.getyPos() && position.getyPos() <= bottomRightCorner.getyPos();
     }
 }

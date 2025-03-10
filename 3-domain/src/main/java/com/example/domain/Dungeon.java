@@ -1,6 +1,7 @@
 package com.example.domain;
 
 
+import com.example.domain.map.DungeonRoom;
 import com.example.domain.map.DungeonTile;
 
 import java.util.List;
@@ -17,9 +18,11 @@ public class Dungeon {
     private int height;
     private List<LivingEntity> entities;
     private Position playerSpawnPoint;
+    private List<DungeonRoom> rooms;
 
 // TODO add items, level and difficulty
-    public Dungeon(int enemyAmount, DungeonTile[][] dungeonTiles, int width, int height, List<LivingEntity> entities, Position playerSpawnPoint) {
+    public Dungeon(int enemyAmount, DungeonTile[][] dungeonTiles, int width, int height, List<LivingEntity> entities, Position playerSpawnPoint, List<DungeonRoom> rooms) {
+        this.rooms = rooms;
 //        this.level = level;
 //        this.difficulty = difficulty;
         this.enemyAmount = enemyAmount;
@@ -30,6 +33,7 @@ public class Dungeon {
         this.height = height;
         this.entities = entities;
         this.playerSpawnPoint = playerSpawnPoint;
+        this.rooms = rooms;
     }
 
     public int getWidth() {
@@ -49,13 +53,28 @@ public class Dungeon {
         return remainingEnemies;
     }
 
+    public DungeonRoom getRoomForPosition(Position position){
+        for(DungeonRoom room : rooms){
+            if(room.containsPosition(position)){
+                return room;
+            }
+        }
+        return null;
+    }
 
     public boolean isWalkable(Position position){
         return getTile(position).isWalkable();
     }
 
     public DungeonTile getTile(Position position){
-        return dungeonTiles[position.getxPos()][position.getyPos()];
+        return dungeonTiles[position.getyPos()][position.getxPos()];
     }
 
+    public List<DungeonRoom> getRooms() {
+        return rooms;
+    }
+
+    public int getEnemyAmount() {
+        return enemyAmount;
+    }
 }
