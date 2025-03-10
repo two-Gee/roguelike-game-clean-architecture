@@ -36,8 +36,10 @@ public class DungeonRoom {
 
     // Returns true if room intersects another room
     public boolean intersectsOtherRoom(DungeonRoom other) {
-        return topLeftCorner.getxPos() <= other.bottomRightCorner.getxPos() && bottomRightCorner.getxPos() >= other.topLeftCorner.getxPos() &&
-                topLeftCorner.getyPos() <= other.bottomRightCorner.getyPos() && bottomRightCorner.getyPos() >= other.topLeftCorner.getyPos();
+        return topLeftCorner.getxPos() <= other.bottomRightCorner.getxPos() + 1 &&
+                bottomRightCorner.getxPos() >= other.topLeftCorner.getxPos() - 1 &&
+                topLeftCorner.getyPos() <= other.bottomRightCorner.getyPos() + 1 &&
+                bottomRightCorner.getyPos() >= other.topLeftCorner.getyPos() - 1;
     }
 
     public boolean containsPosition(Position position){
