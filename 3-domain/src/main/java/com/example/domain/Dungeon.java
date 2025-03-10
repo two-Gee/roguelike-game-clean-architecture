@@ -35,7 +35,6 @@ public class Dungeon {
         this.entities = entities;
         this.dungeonRooms = dungeonRooms;
         this.playerSpawnPoint = playerSpawnPoint;
-        this.rooms = rooms;
     }
 
     public int getWidth() {
@@ -56,7 +55,7 @@ public class Dungeon {
     }
 
     public DungeonRoom getRoomForPosition(Position position){
-        for(DungeonRoom room : rooms){
+        for(DungeonRoom room : dungeonRooms.values()){
             if(room.containsPosition(position)){
                 return room;
             }
@@ -78,7 +77,15 @@ public class Dungeon {
 
     public int getEnemyAmount() {
         return enemyAmount;
+    }
     public DungeonRoom getRoomByRoomNumber(int roomNumber) {
         return dungeonRooms.get(roomNumber);
+    }
+
+    public Position getRandomPositionInRoom(int roomNumber){
+        DungeonRoom room = dungeonRooms.get(roomNumber);
+        int x = (int) (Math.random() * (room.getBottomRightCorner().getxPos() - room.getTopLeftCorner().getxPos()) + room.getTopLeftCorner().getxPos());
+        int y = (int) (Math.random() * (room.getBottomRightCorner().getyPos() - room.getTopLeftCorner().getyPos()) + room.getTopLeftCorner().getyPos());
+        return new Position(x, y);
     }
 }
