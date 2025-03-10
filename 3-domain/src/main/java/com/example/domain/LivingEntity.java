@@ -3,21 +3,28 @@ package com.example.domain;
 import java.util.UUID;
 
 public class LivingEntity {
+
+
     private Position position;
     private int health;
     private int attack;
     private boolean isDead;
-    private UUID roomID;
+    private int roomID;
 
-    public LivingEntity(int health, int attack) {
-        this.position = new Position(0, 0);
+
+    public LivingEntity(int health, int attack, int roomID, Position position) {
+        this.roomID = roomID;
         this.health = health;
         this.attack = attack;
         this.isDead = false;
+        this.position = position;
     }
 
     public Position getPosition() {
         return position;
+    }
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public void move(Position position) {
@@ -60,5 +67,12 @@ public class LivingEntity {
             return this.position.equals(position);
     }
 
+    public int getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(int roomID) {
+        this.roomID = roomID;
+    }
 }
 

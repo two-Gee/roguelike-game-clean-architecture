@@ -16,8 +16,12 @@ public class Monster extends LivingEntity {
     private String name;
     private UUID id;
 
-    public Monster(String name, int health, int damage) {
-        super(health, damage);
+    public UUID getId() {
+        return id;
+    }
+
+    public Monster(String name, int health, int damage, int roomID, Position position) {
+        super(health, damage, roomID, position);
         this.name = name;
         this.id = UUID.randomUUID();
     }
