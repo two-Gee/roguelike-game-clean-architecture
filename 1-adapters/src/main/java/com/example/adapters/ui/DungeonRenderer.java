@@ -2,6 +2,7 @@ package com.example.adapters.ui;
 
 import com.example.application.Factories.MonsterFactory;
 import com.example.application.GameService;
+import com.example.application.MonsterStore;
 import com.example.application.map.DungeonGenerator;
 import com.example.domain.*;
 import com.example.domain.Monster.Monster;
@@ -103,18 +104,19 @@ public class DungeonRenderer {
     // Test rendering for now
     public static void main( String[] args ) throws InterruptedException {
 
-        DungeonConfiguration config = new DungeonConfiguration(70,35,3,3,5,12,5,5);
-        Dungeon dungeon = DungeonGenerator.generateDungeon(config, new ArrayList<LivingEntity>());
+        DungeonConfiguration config = new DungeonConfiguration(70,35,15,7,5,9,5,5);
+        Dungeon dungeon = DungeonGenerator.generateDungeon(config);
+        Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
         Player player = new Player(100, 5, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint()); // Assuming you have a default constructor for Player
 
 
-        Map<UUID, Monster> monsters = new HashMap<>();
-        for(DungeonRoom room : dungeon.getDungeonRooms().values()){
-            MonsterFactory monsterFactory = new MonsterFactory();
-            Random rnd = new Random();
-            monsters.putAll(monsterFactory.createMonstersForRoom(rnd.nextInt(3) +2, room.getRoomNumber(), dungeon));
-        }
-        GameService gameService = new GameService(player, dungeon, monsters );
+//        Map<UUID, Monster> monsters = new HashMap<>();
+//        for(DungeonRoom room : dungeon.getDungeonRooms().values()){
+//            MonsterFactory monsterFactory = new MonsterFactory();
+//            Random rnd = new Random();
+//            monsters.putAll(monsterFactory.createMonstersForRoom(rnd.nextInt(3) +2, room.getRoomNumber(), dungeon));
+//        }
+        GameService gameService = new GameService(player, dungeon, monsters);
         DungeonRenderer rd = new DungeonRenderer(dungeon, player, new ArrayList<>(monsters.values()));
         rd.renderDungeonToConsole();
 
