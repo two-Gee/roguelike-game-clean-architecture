@@ -90,8 +90,8 @@ public class DungeonGenerator {
 
     private void generateRoom(DungeonRoom room, Map<Integer, DungeonRoom> dungeonRooms, boolean spawnMonsters) {
         // Carve room in the map
-        for (int y = room.getTopLeftCorner().getyPos() + 1; y < room.getBottomRightCorner().getyPos(); y++) {
-            for (int x = room.getTopLeftCorner().getxPos() + 1; x < room.getBottomRightCorner().getxPos(); x++) {
+        for (int y = room.getTopLeftCorner().getyPos(); y <= room.getBottomRightCorner().getyPos(); y++) {
+            for (int x = room.getTopLeftCorner().getxPos(); x <= room.getBottomRightCorner().getxPos(); x++) {
                 this.dungeonTiles[y][x] = DungeonTile.Floor;
             }
         }
