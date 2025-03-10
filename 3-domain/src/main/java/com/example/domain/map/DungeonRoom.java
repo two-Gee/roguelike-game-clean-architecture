@@ -9,17 +9,19 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class DungeonRoom {
+    private int roomNumber;
     private Position topLeftCorner;
     private Position bottomRightCorner;
-    private List<Item> items;
-    private List<Monster> monsters;
-    private int getRoomID;
 
-    public DungeonRoom(int x, int y, int width, int height) {
+    public DungeonRoom(int x, int y, int width, int height, int roomNumber) {
+        this.roomNumber = roomNumber;
         topLeftCorner = new Position(x, y);
         bottomRightCorner = new Position(x + width, y + height);
     }
 
+    public int getRoomNumber() {
+        return roomNumber;
+    }
     public Position getRoomCenter() {
         return new Position((topLeftCorner.getxPos() + bottomRightCorner.getxPos())/2, (topLeftCorner.getyPos() + bottomRightCorner.getyPos())/2);
     }
@@ -38,20 +40,4 @@ public class DungeonRoom {
                 topLeftCorner.getyPos() <= other.bottomRightCorner.getyPos() && bottomRightCorner.getyPos() >= other.topLeftCorner.getyPos();
     }
 
-    public void addMonster(Monster monster) {
-        monsters.add(monster);
-    }
-
-    public void addItem(Item item) {
-        items.add(item);
-    }
-
-    public int getGetRoomID() {
-        return getRoomID;
-    }
-
-    public boolean containsPosition(Position position){
-        return position.getxPos() >= topLeftCorner.getxPos() && position.getxPos() <= bottomRightCorner.getxPos() &&
-                position.getyPos() >= topLeftCorner.getyPos() && position.getyPos() <= bottomRightCorner.getyPos();
-    }
 }
