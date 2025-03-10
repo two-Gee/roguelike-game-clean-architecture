@@ -40,4 +40,9 @@ public class DungeonRoom {
                 topLeftCorner.getyPos() <= other.bottomRightCorner.getyPos() && bottomRightCorner.getyPos() >= other.topLeftCorner.getyPos();
     }
 
+    public boolean containsPosition(Position position){
+        return position.getxPos() >= topLeftCorner.getxPos() && position.getxPos() <= bottomRightCorner.getxPos() &&
+                position.getyPos() >= topLeftCorner.getyPos() && position.getyPos() <= bottomRightCorner.getyPos();
+    }
+
 }
