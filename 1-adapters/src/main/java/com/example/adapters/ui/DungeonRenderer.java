@@ -104,19 +104,14 @@ public class DungeonRenderer {
     public static void main( String[] args ) throws InterruptedException {
 
         DungeonConfiguration config = new DungeonConfiguration(70,35,3,3,5,12,5,5);
-        Dungeon dungeon = DungeonGenerator.generateDungeon(config, new ArrayList<LivingEntity>());
+        Dungeon dungeon = DungeonGenerator.generateDungeon(config);
+        Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
         Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint()); // Assuming you have a default constructor for Player
 
-
-        Map<UUID, Monster> monsters = new HashMap<>();
-        for(DungeonRoom room : dungeon.getDungeonRooms().values()){
-            MonsterFactory monsterFactory = new MonsterFactory();
-            Random rnd = new Random();
-            monsters.putAll(monsterFactory.createMonstersForRoom(rnd.nextInt(3) +2, room.getRoomNumber(), dungeon));
-        }
         MonsterStore monsterStore = new MonsterStore(monsters);
         GameService gameService = new GameService(player, dungeon, monsterStore);
         DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore);
+
         rd.renderDungeonToConsole();
 
         // Simulate player movement
