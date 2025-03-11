@@ -2,6 +2,7 @@ package com.example.adapters.ui;
 
 import com.example.application.Factories.MonsterFactory;
 import com.example.application.GameService;
+import com.example.application.MonsterStore;
 import com.example.application.map.DungeonGenerator;
 import com.example.domain.*;
 import com.example.domain.Monster.Monster;
@@ -17,16 +18,14 @@ import java.util.List;
 public class DungeonRenderer {
     private Dungeon dungeon;
     private Player player;
-    private Position previousPlayerPosition;
-    private List<Monster> monsterList;
+    private MonsterStore monsterStore;
 
     // TODO add Fov
 
-    public DungeonRenderer(Dungeon dungeon, Player player, List<Monster> monsters) {
+    public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore) {
         this.dungeon = dungeon;
         this.player = player;
-        this.previousPlayerPosition = player.getPosition();
-        this.monsterList = monsters;
+        this.monsterStore = monsterStore;
 
     }
 
@@ -45,6 +44,7 @@ public class DungeonRenderer {
                     fgColor = Color.WHITE;
                 }
                 boolean monsterPresent = false;
+                List<Monster> monsterList = monsterStore.getMonsters();
                 for(Monster monster : monsterList){
                     if(monster.getPosition().equals(new Position(x, y))){
                        displayCharacter = " m ";
@@ -105,7 +105,7 @@ public class DungeonRenderer {
 
         DungeonConfiguration config = new DungeonConfiguration(70,35,3,3,5,12,5,5);
         Dungeon dungeon = DungeonGenerator.generateDungeon(config, new ArrayList<LivingEntity>());
-        Player player = new Player(100, 5, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint()); // Assuming you have a default constructor for Player
+        Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint()); // Assuming you have a default constructor for Player
 
 
         Map<UUID, Monster> monsters = new HashMap<>();
@@ -114,8 +114,9 @@ public class DungeonRenderer {
             Random rnd = new Random();
             monsters.putAll(monsterFactory.createMonstersForRoom(rnd.nextInt(3) +2, room.getRoomNumber(), dungeon));
         }
-        GameService gameService = new GameService(player, dungeon, monsters );
-        DungeonRenderer rd = new DungeonRenderer(dungeon, player, new ArrayList<>(monsters.values()));
+        MonsterStore monsterStore = new MonsterStore(monsters);
+        GameService gameService = new GameService(player, dungeon, monsterStore);
+        DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore);
         rd.renderDungeonToConsole();
 
         // Simulate player movement
