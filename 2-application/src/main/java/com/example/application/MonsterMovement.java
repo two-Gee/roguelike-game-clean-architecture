@@ -53,4 +53,34 @@ public class MonsterMovement {
             monster.move(newPos);
         }
     }
+    public void moveRandom(){
+        Position monsterPos = monster.getPosition();
+        Position newPos = null;
+        int random = (int) (Math.random() * 4);
+        switch (random){
+            case 0:
+                newPos = new Position(monsterPos.getxPos() + 1, monsterPos.getyPos());
+                break;
+            case 1:
+                newPos = new Position(monsterPos.getxPos() - 1, monsterPos.getyPos());
+                break;
+            case 2:
+                newPos = new Position(monsterPos.getxPos(), monsterPos.getyPos() + 1);
+                break;
+            case 3:
+                newPos = new Position(monsterPos.getxPos(), monsterPos.getyPos() - 1);
+                break;
+        }
+        for (Monster otherMonster : otherMonsters) {
+            if (otherMonster.getPosition().equals(newPos)) {
+                return;
+            }
+        }
+        if(newPos.equals(player.getPosition())){
+            return;
+        }
+        if(dungeon.getTile(newPos).isWalkable() && dungeon.getRoomForPosition(newPos) != null){
+            monster.move(newPos);
+        }
+    }
 }

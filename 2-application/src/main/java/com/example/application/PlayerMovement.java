@@ -21,33 +21,9 @@ public class PlayerMovement {
     }
 
     public void moveInDirection(Direction direction){
-        Position newPosition = null;
-        switch (direction){
-            case NORTH:
-                newPosition = new Position(player.getPosition().getxPos(), player.getPosition().getyPos() - 1);
-                break;
-            case SOUTH:
-                newPosition = new Position(player.getPosition().getxPos(), player.getPosition().getyPos() + 1);
-                break;
-            case EAST:
-                newPosition = new Position(player.getPosition().getxPos() + 1, player.getPosition().getyPos());
-                break;
-            case WEST:
-                newPosition = new Position(player.getPosition().getxPos() - 1, player.getPosition().getyPos());
-                break;
+        Position newPosition = player.getPosition().getAdjacentPosition(direction);
+        if(dungeon.isWalkable(newPosition)){
+            player.move(newPosition);
         }
-
-            if(dungeon.isWalkable(newPosition)){
-                for(Monster monster : monsters){
-                    if (monster.isAtPosition(newPosition)){
-                        player.attack(monster);
-                        return;
-                    }
-                }
-                player.move(newPosition);
-            }
-
         }
-
-
 }

@@ -14,9 +14,15 @@ public class MonsterStore {
         this.monsters = monsters;
     }
 
-    public List<Monster> findByRoomID(int roomID) {
+    public List<Monster> findByRoomNumber(int roomNumber) {
         return monsters.values().stream()
-                .filter(monster -> monster.getRoomID() ==(roomID))
+                .filter(monster -> monster.getRoomNumber() ==(roomNumber))
                 .toList();
+    }
+    public boolean remove(UUID id){
+        return monsters.remove(id) != null;
+    }
+    public List<Monster> getMonsters() {
+        return monsters.values().stream().toList();
     }
 }
