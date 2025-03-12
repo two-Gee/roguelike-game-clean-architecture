@@ -13,7 +13,6 @@ import java.util.UUID;
 
 
 public class Monster extends LivingEntity {
-    private String name;
     private UUID id;
     private MonsterMovementType movementType;
 
@@ -22,17 +21,15 @@ public class Monster extends LivingEntity {
     }
 
     public Monster(String name, int health, int damage, int roomID, Position position, MonsterMovementType movementType) {
-        super(health, damage, roomID, position);
-        this.name = name;
+        super(health, damage, roomID, position, name);
         this.id = UUID.randomUUID();
+        this.movementType=movementType;
     }
 
-    public String getName() {
-        return name;
+    public MonsterMovementType getMovementType() {
+        return movementType;
     }
-
-
-//    public void moveRandom(){
+    //    public void moveRandom(){
 //        Random rnd = new Random();
 //        int randomNumber = rnd.nextInt(4);
 //        super.move(Direction.values()[randomNumber]);

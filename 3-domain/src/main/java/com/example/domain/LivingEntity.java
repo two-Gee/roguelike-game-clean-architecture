@@ -4,20 +4,21 @@ import java.util.UUID;
 
 public class LivingEntity {
 
-
+    private String name;
     private Position position;
     private int health;
     private int attack;
     private boolean isDead;
-    private int roomID;
+    private int roomNumber;
 
 
-    public LivingEntity(int health, int attack, int roomID, Position position) {
-        this.roomID = roomID;
+    public LivingEntity(int health, int attack, int roomID, Position position, String name) {
+        this.roomNumber = roomID;
         this.health = health;
         this.attack = attack;
         this.isDead = false;
         this.position = position;
+        this.name=name;
     }
 
     public Position getPosition() {
@@ -30,23 +31,6 @@ public class LivingEntity {
     public void move(Position position) {
         this.position = position;
     }
-
-//    public void move(Direction direction) {
-//        switch (direction) {
-//            case NORTH:
-//                this.move(new Position(this.position.getxPos(), this.position.getyPos() - 1));
-//                break;
-//            case SOUTH:
-//                this.move(new Position(this.position.getxPos(), this.position.getyPos() + 1));
-//                break;
-//            case EAST:
-//                this.move(new Position(this.position.getxPos() + 1, this.position.getyPos()));
-//                break;
-//            case WEST:
-//                this.move(new Position(this.position.getxPos() - 1, this.position.getyPos()));
-//                break;
-//        }
-//    }
 
     public void attack(LivingEntity target) {
         target.takeDamage(this.attack);
@@ -67,12 +51,24 @@ public class LivingEntity {
             return this.position.equals(position);
     }
 
-    public int getRoomID() {
-        return roomID;
+    public int getRoomNumber() {
+        return roomNumber;
     }
 
     public void setRoomID(int roomID) {
-        this.roomID = roomID;
+        this.roomNumber = roomID;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAttack() {
+        return attack;
     }
 }
 
