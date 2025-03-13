@@ -17,24 +17,31 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
     private Dungeon dungeon;
     private Player player;
     private MonsterStore monsterStore;
-
     private NotificationContainer notificationContainer;
+    private volatile boolean needsRender = true;
+    private StringBuilder previousRenderBuffer;
+    private static final int UPDATE_FREQUENCY_MS = 50;
 
     public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore) {
         this.dungeon = dungeon;
         this.player = player;
         this.monsterStore = monsterStore;
         this.notificationContainer = new NotificationContainer();
+        this.previousRenderBuffer = new StringBuilder();
     }
 
     @Override
-    public void renderDungeon() {
-        clearConsole();
+    public synchronized void renderDungeon() {
+        // Skip rendering if nothing changed
+        if (!needsRender) return;
 
+        StringBuilder newRenderBuffer = new StringBuilder();
+
+        // Render the dungeon tiles
         for (int y = 0; y < dungeon.getHeight(); y++) {
             for (int x = 0; x < dungeon.getWidth(); x++) {
                 Position currentTile = new Position(x, y);
-                DungeonTile t =  dungeon.getTile(currentTile);
+                DungeonTile t = dungeon.getTile(currentTile);
                 Color tileColor = t.getColour();
                 String displayCharacter = t.getDisplayCharacter();
 
@@ -45,41 +52,48 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
                 } else {
                     // Check if monster is on current tile
                     List<Monster> monsterList = monsterStore.getMonsters();
-                    for(Monster monster : monsterList){
-                        if(monster.getPosition().equals(currentTile)){
+                    for (Monster monster : monsterList) {
+                        if (monster.getPosition().equals(currentTile)) {
                             displayCharacter = DungeonTile.Monster.getDisplayCharacter();
                             tileColor = DungeonTile.Monster.getColour();
                         }
                     }
                 }
 
-                System.out.print(getAnsiColor(tileColor) + displayCharacter + "\u001B[0m"); // Reset color
+                newRenderBuffer.append(getAnsiColor(tileColor)).append(displayCharacter).append("\u001B[0m"); // Reset color
             }
-            System.out.println();
+            newRenderBuffer.append("\n");
         }
 
-        renderStatusBar();
-        renderNotifications();
+        renderStatusBar(newRenderBuffer);
+        renderNotifications(newRenderBuffer);
 
-        System.out.println();
+        // Only update if the new render is different
+        if (!newRenderBuffer.toString().contentEquals(previousRenderBuffer)) {
+            clearConsole();
+            System.out.println(newRenderBuffer);
+            previousRenderBuffer.setLength(0);
+            previousRenderBuffer.append(newRenderBuffer);
+        }
+
+        needsRender = false;
     }
 
-    private void clearConsole() {
-        System.out.print("\033[H\033[2J\033[3J");
-        System.out.flush();
+    public void requestRender() {
+        needsRender = true;
     }
 
-    private void renderNotifications() {
-        System.out.println("\n Current notifications: \n");
-        if(notificationContainer.getNotifications().isEmpty()) return;
+    private void renderNotifications(StringBuilder newRenderBuffer) {
+        newRenderBuffer.append("\n Current notifications: \n");
+        if (notificationContainer.getNotifications().isEmpty()) return;
 
         for (String notification : notificationContainer.getNotifications()) {
-            System.out.println(" " + notification + "\n");
+            newRenderBuffer.append(" ").append(notification).append("\n");
         }
     }
 
-    private void renderStatusBar() {
-        System.out.println("\n Player Health: " + player.getHealth() + " | Attack Damage: " + player.getAttack() + "\n");
+    private void renderStatusBar(StringBuilder newRenderBuffer) {
+        newRenderBuffer.append("\n Player Health: ").append(player.getHealth()).append(" | Attack Damage: ").append(player.getAttack()).append("\n");
     }
 
     @Override
@@ -87,27 +101,27 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         String attackNotification = attacker.getName() + " attacks " + target.getName() + "! " + target.getName() + " took " + attacker.getAttack() + " damage.";
         notificationContainer.addNotification(attackNotification);
 
-        renderDungeon();
+        requestRender();
+
         // Remove notification after 5 seconds
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 notificationContainer.removeNotification(attackNotification);
-                renderDungeon();
+                requestRender();
             }
         }, 5000);
-
     }
 
     @Override
     public void renderDeathOfMonster(Monster monster) {
-
+        // TODO
     }
 
     @Override
     public void renderGameOver() {
-
+        // TODO
     }
 
     private String getAnsiColor(Color tileColor) {
@@ -125,51 +139,78 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         return backgroundColor + foregroundColor;
     }
 
-    public static void main( String[] args ) {
+    private void clearConsole() {
+        try {
+            // Clear console based on OS
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                // Or use ANSI escape codes:
+                    // System.out.print("\033[H\033[2J\033[3J");
+                    // System.out.flush();
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception innerException) {
+            // Fallback to printing newlines
+            System.out.println("\n".repeat(50));
+        }
+    }
 
-        DungeonConfiguration config = new DungeonConfiguration(70,35,15,7,5,12,5,5);
+    public static void main(String[] args) {
+
+        DungeonConfiguration config = new DungeonConfiguration(70, 35, 15, 7, 5, 12, 5, 5);
         Dungeon dungeon = DungeonGenerator.generateDungeon(config);
         Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
-        Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player"); // Assuming you have a default constructor for Player
+        Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
 
         MonsterStore monsterStore = new MonsterStore(monsters);
         DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore);
-        GameService gameService = new GameService(player, dungeon, monsterStore,rd);
+        GameService gameService = new GameService(player, dungeon, monsterStore, rd);
 
         rd.renderDungeon();
 
         Runnable r1 = () -> {
-            while(true){
+            while (true) {
                 Scanner sc = new Scanner(System.in);
                 String input = sc.next();
-                if(input.equals("w")) {
+                if (input.equals("w")) {
                     gameService.movePlayer(Direction.NORTH);
-                }else if(input.equals("s")) {
+                } else if (input.equals("s")) {
                     gameService.movePlayer(Direction.SOUTH);
-                }else if(input.equals("a")) {
+                } else if (input.equals("a")) {
                     gameService.movePlayer(Direction.WEST);
-                }else if(input.equals("d")) {
+                } else if (input.equals("d")) {
                     gameService.movePlayer(Direction.EAST);
                 }
-                rd.renderDungeon();
+                rd.requestRender();
             }
         };
 
-        Runnable r2 =
-                () -> {
-                    Random rnd = new Random();
-                    while(true){
-                        gameService.moveMonsters();
-                        try {
-                            Thread.sleep(2000);
-                        }catch(InterruptedException e){
-                            e.printStackTrace();
-                        }
-                        rd.renderDungeon();
-                    }
-                };
+        Runnable r2 = () -> {
+            while (true) {
+                gameService.moveMonsters();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                rd.requestRender();
+            }
+        };
 
-        new Thread(r2).start();
+        Runnable renderingLoop = () -> {
+            while (true) {
+                rd.renderDungeon();
+                try {
+                    Thread.sleep(UPDATE_FREQUENCY_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        new Thread(renderingLoop).start();
         new Thread(r1).start();
+        new Thread(r2).start();
     }
 }
