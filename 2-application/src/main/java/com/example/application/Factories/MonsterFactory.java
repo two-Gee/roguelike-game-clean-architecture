@@ -1,5 +1,8 @@
 package com.example.application.Factories;
 
+import com.example.application.ApproachMovementStrategy;
+import com.example.application.RandomMovementStrategy;
+import com.example.application.StationaryMovementStrategy;
 import com.example.domain.Dungeon;
 import com.example.domain.Monster.Monster;
 import com.example.domain.Monster.MonsterMovementType;
@@ -15,9 +18,9 @@ import java.util.UUID;
 public class MonsterFactory {
     public static Monster createMonster(MonsterTypes type, int roomID, Position position){
         return switch (type) {
-            case GOBLIN -> new Monster("Goblin", 10, 5, roomID, position, MonsterMovementType.APPROACH);
-            case ORC -> new Monster("Orc", 15, 8, roomID, position, MonsterMovementType.RANDOM);
-            case TROLL -> new Monster("Troll", 20, 10, roomID, position, MonsterMovementType.STATIONARY);
+            case GOBLIN -> new Monster("Goblin", 10, 5, roomID, position, new ApproachMovementStrategy());
+            case ORC -> new Monster("Orc", 15, 8, roomID, position, new RandomMovementStrategy());
+            case TROLL -> new Monster("Troll", 20, 10, roomID, position, new StationaryMovementStrategy());
             default -> throw new IllegalArgumentException();
         };
     }

@@ -2,9 +2,7 @@ package com.example.domain.Monster;
 
 
 
-import com.example.domain.Direction;
-import com.example.domain.LivingEntity;
-import com.example.domain.Position;
+import com.example.domain.*;
 
 
 import java.util.List;
@@ -14,20 +12,20 @@ import java.util.UUID;
 
 public class Monster extends LivingEntity {
     private UUID id;
-    private MonsterMovementType movementType;
+    private MovementStrategy movementStrategy;
 
     public UUID getId() {
         return id;
     }
 
-    public Monster(String name, int health, int damage, int roomID, Position position, MonsterMovementType movementType) {
+    public Monster(String name, int health, int damage, int roomID, Position position, MovementStrategy movementStrategy) {
         super(health, damage, roomID, position, name);
         this.id = UUID.randomUUID();
-        this.movementType=movementType;
+        this.movementStrategy=movementStrategy;
     }
 
-    public MonsterMovementType getMovementType() {
-        return movementType;
+    public Position getNextPosition(Player player) {
+        return movementStrategy.getNextPosition(this, player);
     }
     //    public void moveRandom(){
 //        Random rnd = new Random();

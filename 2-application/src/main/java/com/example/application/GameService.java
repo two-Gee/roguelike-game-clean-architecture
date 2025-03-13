@@ -13,13 +13,10 @@ public class GameService {
     private Player player;
     private Dungeon dungeon;
     private MonsterStore monsterStore;
-    private DungeonRenderer dungeonRenderer;
-
-    public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore, DungeonRenderer dungeonRenderer) {
+    public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore) {
         this.player = player;
         this.dungeon = dungeon;
         this.monsterStore = monsterStore;
-        this.dungeonRenderer = dungeonRenderer;
     }
 
     public void movePlayer(Direction direction){
@@ -34,16 +31,13 @@ public class GameService {
         for(Monster monster : monstersInCurrentRoom){
             if(monster.getPosition().equals(newPos)){
                 player.attack(monster);
-                dungeonRenderer.renderAttack(player, monster);
                 if(monster.isDead()){
                     monsterStore.remove(monster.getId());
-                    dungeonRenderer.renderDeathOfMonster(monster);
                 }
                 return;
             }
         }
         playerMovement.moveInDirection(direction);
-        dungeonRenderer.renderDungeon();
     }
 
     public void moveMonsters(){
@@ -52,24 +46,14 @@ public class GameService {
             for (Monster monster : monsterStore.findByRoomNumber(player.getRoomNumber())){
                 if(monster.getPosition().isAdjacent(player.getPosition())){
                     monster.attack(player);
-                    dungeonRenderer.renderAttack(monster, player);
                 }else{
                     MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(player.getRoomNumber()));
-                    switch (monster.getMovementType()){
-                        case APPROACH:
-                            monsterMovement.moveTowardPlayer();
-                            renderDungeon = true;
-                            break;
-                        case STATIONARY:
-                            break;
-                        case RANDOM:
-                            monsterMovement.moveRandom();
-                            renderDungeon = true;
-                            break;
-                    }
+                    monsterMovement.move();
                 }
             }
-            if(renderDungeon) dungeonRenderer.renderDungeon();
+            if(renderDungeon){
+
+            }
         }
     }
 }
