@@ -12,22 +12,22 @@ public class GameService {
     private GameState gameState;
     private Player player;
     private Dungeon dungeon;
-    private DungeonRoom currentRoom;
+    private int currentRoomNumber;
     private MonsterStore monsterStore;
     private DungeonRenderer dungeonRenderer;
 
     public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore, DungeonRenderer dungeonRenderer) {
         this.player = player;
         this.dungeon = dungeon;
-        this.currentRoom = dungeon.getRoomForPosition(player.getPosition());
+        this.currentRoomNumber = dungeon.getRoomForPosition(player.getPosition()).getRoomNumber();
         this.monsterStore = monsterStore;
         this.dungeonRenderer = dungeonRenderer;
     }
 
     public void movePlayer(Direction direction){
         List<Monster> monstersInCurrentRoom;
-        if(currentRoom != null){
-            monstersInCurrentRoom = monsterStore.findByRoomNumber(currentRoom.getRoomNumber());
+        if(currentRoomNumber != -1){
+            monstersInCurrentRoom = monsterStore.findByRoomNumber(currentRoomNumber);
         }else{
             monstersInCurrentRoom = new ArrayList<>();
         }
@@ -52,13 +52,13 @@ public class GameService {
     }
 
     public void moveMonsters(){
-        for (Monster monster : monsterStore.findByRoomNumber(player.getRoomNumber())){
-            if(monster.getPosition().isAdjacent(player.getPosition())){
+        for (Monster monster : monsterStore.findByRoomNumber(currentRoomNumber)) {
+            if (monster.getPosition().isAdjacent(player.getPosition())) {
                 dungeonRenderer.renderAttack(monster, player);
                 monster.attack(player);
-            }else{
-                MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(currentRoom.getRoomNumber()));
-                switch (monster.getMovementType()){
+            } else {
+                MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(currentRoomNumber));
+                switch (monster.getMovementType()) {
                     case APPROACH:
                         monsterMovement.moveTowardPlayer();
                         dungeonRenderer.renderDungeon();
@@ -75,11 +75,22 @@ public class GameService {
         }
     }
     public boolean playerEnteredNewRoom(){
-        return currentRoom != dungeon.getRoomForPosition(player.getPosition()) && dungeon.getRoomForPosition(player.getPosition()) != null;
+        DungeonRoom currentRoom = dungeon.getRoomForPosition(player.getPosition());
+        if (currentRoom == null){
+            return true;
+        }
+        return currentRoomNumber != dungeon.getRoomForPosition(player.getPosition()).getRoomNumber();
     }
 
     private void changeRoom(){
-        currentRoom = dungeon.getRoomForPosition(player.getPosition());
+        DungeonRoom currentRoom = dungeon.getRoomForPosition(player.getPosition());
+        if (currentRoom != null){
+            player.setRoomID(currentRoomNumber);
+            currentRoomNumber = currentRoom.getRoomNumber();
+        } else {
+            player.setRoomID(-1);
+            currentRoomNumber = -1;
+        }
     }
 
 
