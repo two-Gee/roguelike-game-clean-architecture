@@ -12,22 +12,20 @@ public class GameService {
     private GameState gameState;
     private Player player;
     private Dungeon dungeon;
-    private DungeonRoom currentRoom;
     private MonsterStore monsterStore;
     private DungeonRenderer dungeonRenderer;
 
     public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore, DungeonRenderer dungeonRenderer) {
         this.player = player;
         this.dungeon = dungeon;
-        this.currentRoom = dungeon.getRoomForPosition(player.getPosition());
         this.monsterStore = monsterStore;
         this.dungeonRenderer = dungeonRenderer;
     }
 
     public void movePlayer(Direction direction){
         List<Monster> monstersInCurrentRoom;
-        if(currentRoom != null){
-            monstersInCurrentRoom = monsterStore.findByRoomNumber(currentRoom.getRoomNumber());
+        if(player.getRoomNumber() != -1){
+            monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
         }else{
             monstersInCurrentRoom = new ArrayList<>();
         }
@@ -46,42 +44,32 @@ public class GameService {
         }
         playerMovement.moveInDirection(direction);
         dungeonRenderer.renderDungeon();
-        if(playerEnteredNewRoom()){
-            changeRoom();
-        }
     }
 
     public void moveMonsters(){
-        for (Monster monster : monsterStore.findByRoomNumber(player.getRoomNumber())){
-            if(monster.getPosition().isAdjacent(player.getPosition())){
-                dungeonRenderer.renderAttack(monster, player);
-                monster.attack(player);
-            }else{
-                MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(currentRoom.getRoomNumber()));
-                switch (monster.getMovementType()){
-                    case APPROACH:
-                        monsterMovement.moveTowardPlayer();
-                        dungeonRenderer.renderDungeon();
-                        break;
-                    case STATIONARY:
-                        break;
-                    case RANDOM:
-                        monsterMovement.moveRandom();
-                        dungeonRenderer.renderDungeon();
-                        break;
+        if(player.getRoomNumber()  != -1){
+            boolean renderDungeon = false;
+            for (Monster monster : monsterStore.findByRoomNumber(player.getRoomNumber())){
+                if(monster.getPosition().isAdjacent(player.getPosition())){
+                    monster.attack(player);
+                    dungeonRenderer.renderAttack(monster, player);
+                }else{
+                    MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(player.getRoomNumber()));
+                    switch (monster.getMovementType()){
+                        case APPROACH:
+                            monsterMovement.moveTowardPlayer();
+                            renderDungeon = true;
+                            break;
+                        case STATIONARY:
+                            break;
+                        case RANDOM:
+                            monsterMovement.moveRandom();
+                            renderDungeon = true;
+                            break;
+                    }
                 }
             }
-
+            if(renderDungeon) dungeonRenderer.renderDungeon();
         }
     }
-    public boolean playerEnteredNewRoom(){
-        return currentRoom != dungeon.getRoomForPosition(player.getPosition()) && dungeon.getRoomForPosition(player.getPosition()) != null;
-    }
-
-    private void changeRoom(){
-        currentRoom = dungeon.getRoomForPosition(player.getPosition());
-    }
-
-
-
 }
