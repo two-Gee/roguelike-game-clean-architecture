@@ -29,7 +29,6 @@ public class MonsterMovement {
             }
         }
         if (newPos.equals(player.getPosition())) {
-            monster.attack(player);
             return;
         }
         if (dungeon.getTile(newPos).isWalkable() && dungeon.getRoomForPosition(newPos) != null) {
