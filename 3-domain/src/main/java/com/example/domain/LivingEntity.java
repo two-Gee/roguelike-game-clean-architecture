@@ -70,5 +70,13 @@ public class LivingEntity {
     public int getAttack() {
         return attack;
     }
+
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 }
 
