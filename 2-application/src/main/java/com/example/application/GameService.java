@@ -12,22 +12,20 @@ public class GameService {
     private GameState gameState;
     private Player player;
     private Dungeon dungeon;
-    private int currentRoomNumber;
     private MonsterStore monsterStore;
     private DungeonRenderer dungeonRenderer;
 
     public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore, DungeonRenderer dungeonRenderer) {
         this.player = player;
         this.dungeon = dungeon;
-        this.currentRoomNumber = dungeon.getRoomForPosition(player.getPosition()).getRoomNumber();
         this.monsterStore = monsterStore;
         this.dungeonRenderer = dungeonRenderer;
     }
 
     public void movePlayer(Direction direction){
         List<Monster> monstersInCurrentRoom;
-        if(currentRoomNumber != -1){
-            monstersInCurrentRoom = monsterStore.findByRoomNumber(currentRoomNumber);
+        if(player.getRoomNumber() != -1){
+            monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
         }else{
             monstersInCurrentRoom = new ArrayList<>();
         }
@@ -46,53 +44,32 @@ public class GameService {
         }
         playerMovement.moveInDirection(direction);
         dungeonRenderer.renderDungeon();
-        if(playerEnteredNewRoom()){
-            changeRoom();
-        }
     }
 
     public void moveMonsters(){
-        for (Monster monster : monsterStore.findByRoomNumber(currentRoomNumber)) {
-            if (monster.getPosition().isAdjacent(player.getPosition())) {
-                dungeonRenderer.renderAttack(monster, player);
-                monster.attack(player);
-            } else {
-                MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(currentRoomNumber));
-                switch (monster.getMovementType()) {
-                    case APPROACH:
-                        monsterMovement.moveTowardPlayer();
-                        dungeonRenderer.renderDungeon();
-                        break;
-                    case STATIONARY:
-                        break;
-                    case RANDOM:
-                        monsterMovement.moveRandom();
-                        dungeonRenderer.renderDungeon();
-                        break;
+        if(player.getRoomNumber()  != -1){
+            boolean renderDungeon = false;
+            for (Monster monster : monsterStore.findByRoomNumber(player.getRoomNumber())){
+                if(monster.getPosition().isAdjacent(player.getPosition())){
+                    monster.attack(player);
+                    dungeonRenderer.renderAttack(monster, player);
+                }else{
+                    MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(player.getRoomNumber()));
+                    switch (monster.getMovementType()){
+                        case APPROACH:
+                            monsterMovement.moveTowardPlayer();
+                            renderDungeon = true;
+                            break;
+                        case STATIONARY:
+                            break;
+                        case RANDOM:
+                            monsterMovement.moveRandom();
+                            renderDungeon = true;
+                            break;
+                    }
                 }
             }
-
+            if(renderDungeon) dungeonRenderer.renderDungeon();
         }
     }
-    public boolean playerEnteredNewRoom(){
-        DungeonRoom currentRoom = dungeon.getRoomForPosition(player.getPosition());
-        if (currentRoom == null){
-            return true;
-        }
-        return currentRoomNumber != dungeon.getRoomForPosition(player.getPosition()).getRoomNumber();
-    }
-
-    private void changeRoom(){
-        DungeonRoom currentRoom = dungeon.getRoomForPosition(player.getPosition());
-        if (currentRoom != null){
-            player.setRoomID(currentRoomNumber);
-            currentRoomNumber = currentRoom.getRoomNumber();
-        } else {
-            player.setRoomID(-1);
-            currentRoomNumber = -1;
-        }
-    }
-
-
-
 }

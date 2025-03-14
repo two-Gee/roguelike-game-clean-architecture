@@ -55,8 +55,8 @@ public class LivingEntity {
         return roomNumber;
     }
 
-    public void setRoomID(int roomID) {
-        this.roomNumber = roomID;
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
     public int getHealth() {
