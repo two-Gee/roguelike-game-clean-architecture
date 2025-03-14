@@ -14,7 +14,6 @@ public class GameService {
     private Dungeon dungeon;
     private MonsterStore monsterStore;
     private DungeonRenderer dungeonRenderer;
-
     public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore, DungeonRenderer dungeonRenderer) {
         this.player = player;
         this.dungeon = dungeon;
@@ -53,20 +52,14 @@ public class GameService {
                 if(monster.getPosition().isAdjacent(player.getPosition())){
                     monster.attack(player);
                     dungeonRenderer.renderAttack(monster, player);
+                    if(player.isDead()){
+                        dungeonRenderer.renderGameOver();
+                        return;
+                    }
                 }else{
                     MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(player.getRoomNumber()));
-                    switch (monster.getMovementType()){
-                        case APPROACH:
-                            monsterMovement.moveTowardPlayer();
-                            renderDungeon = true;
-                            break;
-                        case STATIONARY:
-                            break;
-                        case RANDOM:
-                            monsterMovement.moveRandom();
-                            renderDungeon = true;
-                            break;
-                    }
+                    monsterMovement.move();
+                    renderDungeon= true;
                 }
             }
             if(renderDungeon) dungeonRenderer.renderDungeon();
