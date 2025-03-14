@@ -8,6 +8,9 @@ public enum DungeonTile {
     Player(" @ ", Color.white, true),
 
     Monster(" m ", Color.white, true),
+    Weapon(" W ", Color.white, true),
+    Consumable(" C ", Color.white, true),
+
     Bounds("xxx", Color.black, false),
     Unknown("   ", Color.black, true);
 

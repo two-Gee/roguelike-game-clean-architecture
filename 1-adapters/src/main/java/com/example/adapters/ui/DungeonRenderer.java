@@ -1,10 +1,15 @@
 package com.example.adapters.ui;
 
+import com.example.application.Factories.ItemFactory;
 import com.example.application.Factories.MonsterFactory;
 import com.example.application.GameService;
+import com.example.application.ItemStore;
 import com.example.application.MonsterStore;
 import com.example.application.map.DungeonGenerator;
 import com.example.domain.*;
+import com.example.domain.Item.Consumables;
+import com.example.domain.Item.Item;
+import com.example.domain.Item.Weapon;
 import com.example.domain.Monster.Monster;
 import com.example.domain.map.DungeonConfiguration;
 import com.example.domain.map.DungeonTile;
@@ -17,15 +22,17 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
     private Dungeon dungeon;
     private Player player;
     private MonsterStore monsterStore;
+    private ItemStore itemStore;
     private NotificationContainer notificationContainer;
     private volatile boolean needsRender = true;
     private StringBuilder previousRenderBuffer;
     private static final int UPDATE_FREQUENCY_MS = 50;
 
-    public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore) {
+    public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore, ItemStore itemStore) {
         this.dungeon = dungeon;
         this.player = player;
         this.monsterStore = monsterStore;
+        this.itemStore = itemStore;
         this.notificationContainer = new NotificationContainer();
         this.previousRenderBuffer = new StringBuilder();
     }
@@ -56,6 +63,21 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
                         if (monster.getPosition().equals(currentTile)) {
                             displayCharacter = DungeonTile.Monster.getDisplayCharacter();
                             tileColor = DungeonTile.Monster.getColour();
+                            break;
+                        }
+                    }
+                    // Check if item is on current tile
+                    List<Item> items = itemStore.getItems();
+                    for (Item item : items) {
+                        if (item.getPosition().equals(currentTile)) {
+                            if (item instanceof Weapon) {
+                                displayCharacter = DungeonTile.Weapon.getDisplayCharacter();
+                                tileColor = DungeonTile.Weapon.getColour();
+                            } else if (item instanceof Consumables) {
+                                displayCharacter = DungeonTile.Consumable.getDisplayCharacter();
+                                tileColor = DungeonTile.Consumable.getColour();
+                            }
+                            break;
                         }
                     }
                 }
@@ -129,6 +151,42 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         // TODO
     }
 
+    @Override
+    public void renderWeaponPickup(Weapon weapon) {
+        String attackNotification = "Player picked up a weapon! " + weapon.getName() + " adds " + weapon.getAttack() + " attack damage.";
+        notificationContainer.addNotification(attackNotification);
+
+        requestRender();
+
+        // Remove notification after 5 seconds
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                notificationContainer.removeNotification(attackNotification);
+                requestRender();
+            }
+        }, 5000);
+    }
+
+    @Override
+    public void renderUseOfConsumable(Consumables consumable) {
+        String attackNotification = "Player used a consumable! " + consumable.getName() + " heals " + consumable.getHealthPoints() + " health.";
+        notificationContainer.addNotification(attackNotification);
+
+        requestRender();
+
+        // Remove notification after 5 seconds
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                notificationContainer.removeNotification(attackNotification);
+                requestRender();
+            }
+        }, 5000);
+    }
+
     private String getAnsiColor(Color tileColor) {
         String foregroundColor = "\u001B[37m"; // Default white text
         String backgroundColor = "\u001B[40m"; // Default black background
@@ -166,11 +224,12 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         DungeonConfiguration config = new DungeonConfiguration(70, 35, 15, 7, 5, 12, 5, 5);
         Dungeon dungeon = DungeonGenerator.generateDungeon(config);
         Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
-        Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
-
+        List<Item> items = ItemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
+        Player player = new Player(100, 10, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
+        ItemStore itemStore = new ItemStore(items);
         MonsterStore monsterStore = new MonsterStore(monsters);
-        DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore);
-        GameService gameService = new GameService(player, dungeon, monsterStore, rd);
+        DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore, itemStore);
+        GameService gameService = new GameService(player, dungeon, monsterStore, itemStore, rd);
 
         rd.renderGame();
 
