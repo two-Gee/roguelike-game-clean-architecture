@@ -30,8 +30,8 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         this.previousRenderBuffer = new StringBuilder();
     }
 
-    @Override
-    public synchronized void renderDungeon() {
+
+    public synchronized void renderGame() {
         // Skip rendering if nothing changed
         if (!needsRender) return;
 
@@ -94,6 +94,11 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
 
     private void renderStatusBar(StringBuilder newRenderBuffer) {
         newRenderBuffer.append("\n Player Health: ").append(player.getHealth()).append(" | Attack Damage: ").append(player.getAttack()).append("\n");
+    }
+
+    @Override
+    public void renderDungeon() {
+        requestRender();
     }
 
     @Override
@@ -167,7 +172,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore);
         GameService gameService = new GameService(player, dungeon, monsterStore, rd);
 
-        rd.renderDungeon();
+        rd.renderGame();
 
         Runnable r1 = () -> {
             while (true) {
@@ -182,7 +187,6 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
                 } else if (input.equals("d")) {
                     gameService.movePlayer(Direction.EAST);
                 }
-                rd.requestRender();
             }
         };
 
@@ -194,13 +198,12 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                rd.requestRender();
             }
         };
 
         Runnable renderingLoop = () -> {
             while (true) {
-                rd.renderDungeon();
+                rd.renderGame();
                 try {
                     Thread.sleep(UPDATE_FREQUENCY_MS);
                 } catch (InterruptedException e) {
