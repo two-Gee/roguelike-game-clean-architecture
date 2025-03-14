@@ -6,149 +6,211 @@ import com.example.application.MonsterStore;
 import com.example.application.map.DungeonGenerator;
 import com.example.domain.*;
 import com.example.domain.Monster.Monster;
-import com.example.domain.Monster.MonsterTypes;
 import com.example.domain.map.DungeonConfiguration;
-import com.example.domain.map.DungeonRoom;
 import com.example.domain.map.DungeonTile;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-public class DungeonRenderer {
+public class DungeonRenderer implements com.example.application.DungeonRenderer {
     private Dungeon dungeon;
     private Player player;
     private MonsterStore monsterStore;
-
-    // TODO add Fov
+    private NotificationContainer notificationContainer;
+    private volatile boolean needsRender = true;
+    private StringBuilder previousRenderBuffer;
+    private static final int UPDATE_FREQUENCY_MS = 50;
 
     public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore) {
         this.dungeon = dungeon;
         this.player = player;
         this.monsterStore = monsterStore;
-
+        this.notificationContainer = new NotificationContainer();
+        this.previousRenderBuffer = new StringBuilder();
     }
 
+    @Override
+    public synchronized void renderDungeon() {
+        // Skip rendering if nothing changed
+        if (!needsRender) return;
 
-    public void renderDungeonToConsole() {
-        clearConsole();
+        StringBuilder newRenderBuffer = new StringBuilder();
+
+        // Render the dungeon tiles
         for (int y = 0; y < dungeon.getHeight(); y++) {
             for (int x = 0; x < dungeon.getWidth(); x++) {
-                DungeonTile t =  dungeon.getTile(new Position(x,y));
-                Color fgColor = t.getColour(DungeonTile.TileColorType.Primary);
+                Position currentTile = new Position(x, y);
+                DungeonTile t = dungeon.getTile(currentTile);
+                Color tileColor = t.getColour();
                 String displayCharacter = t.getDisplayCharacter();
 
-                if (player.getPosition().equals(new Position(x, y))) {
-
-                    displayCharacter = " x ";
-                    fgColor = Color.WHITE;
-                }
-                boolean monsterPresent = false;
-                List<Monster> monsterList = monsterStore.getMonsters();
-                for(Monster monster : monsterList){
-                    if(monster.getPosition().equals(new Position(x, y))){
-                       displayCharacter = " m ";
-                       fgColor = Color.WHITE;
+                // Check if player is on current tile
+                if (player.getPosition().equals(currentTile)) {
+                    displayCharacter = DungeonTile.Player.getDisplayCharacter();
+                    tileColor = DungeonTile.Player.getColour();
+                } else {
+                    // Check if monster is on current tile
+                    List<Monster> monsterList = monsterStore.getMonsters();
+                    for (Monster monster : monsterList) {
+                        if (monster.getPosition().equals(currentTile)) {
+                            displayCharacter = DungeonTile.Monster.getDisplayCharacter();
+                            tileColor = DungeonTile.Monster.getColour();
+                        }
                     }
                 }
 
-
-                System.out.print(getAnsiColor(fgColor) + displayCharacter + "\u001B[0m"); // Reset color
+                newRenderBuffer.append(getAnsiColor(tileColor)).append(displayCharacter).append("\u001B[0m"); // Reset color
             }
-            System.out.print("\n");
+            newRenderBuffer.append("\n");
+        }
+
+        renderStatusBar(newRenderBuffer);
+        renderNotifications(newRenderBuffer);
+
+        // Only update if the new render is different
+        if (!newRenderBuffer.toString().contentEquals(previousRenderBuffer)) {
+            clearConsole();
+            System.out.println(newRenderBuffer);
+            previousRenderBuffer.setLength(0);
+            previousRenderBuffer.append(newRenderBuffer);
+        }
+
+        needsRender = false;
+    }
+
+    public void requestRender() {
+        needsRender = true;
+    }
+
+    private void renderNotifications(StringBuilder newRenderBuffer) {
+        newRenderBuffer.append("\n Current notifications: \n");
+        if (notificationContainer.getNotifications().isEmpty()) return;
+
+        for (String notification : notificationContainer.getNotifications()) {
+            newRenderBuffer.append(" ").append(notification).append("\n");
         }
     }
 
-    private void clearConsole() {
-        System.out.print("\033[H\033[2J\033[3J");
-        System.out.flush();
+    private void renderStatusBar(StringBuilder newRenderBuffer) {
+        newRenderBuffer.append("\n Player Health: ").append(player.getHealth()).append(" | Attack Damage: ").append(player.getAttack()).append("\n");
     }
-//    public void renderPlayerToConsole() {
-//        Position playerPosition = player.getPosition();
-//
-//        // Clear the previous player position
-//        if (previousPlayerPosition != null) {
-//            System.out.print("\033[" + (previousPlayerPosition.getyPos() + 1) + ";" + (previousPlayerPosition.getxPos() + 1) + "H");
-//            DungeonTile t = dungeon.getTile(previousPlayerPosition);
-//            Color fgColor = t.getColour(DungeonTile.TileColorType.Primary);
-//            System.out.print(getAnsiColor(fgColor) + t.getDisplayCharacter() + "\u001B[0m"); // Reset color
-//        }
-//
-//        // Render the player at the new position
-//        System.out.print("\033[" + (playerPosition.getyPos() + 1) + ";" + (playerPosition.getxPos() + 1) + "H");
-//        System.out.print("x");
-//
-//        // Update the previous player position
-//        previousPlayerPosition = playerPosition;
-//    }
 
+    @Override
+    public void renderAttack(LivingEntity attacker, LivingEntity target) {
+        String attackNotification = attacker.getName() + " attacks " + target.getName() + "! " + target.getName() + " took " + attacker.getAttack() + " damage.";
+        notificationContainer.addNotification(attackNotification);
 
-    private String getAnsiColor(Color foreground) {
-        String fg = "\u001B[37m"; // Default white text
-        String bg = "\u001B[40m"; // Default black background
+        requestRender();
+
+        // Remove notification after 5 seconds
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                notificationContainer.removeNotification(attackNotification);
+                requestRender();
+            }
+        }, 5000);
+    }
+
+    @Override
+    public void renderDeathOfMonster(Monster monster) {
+        // TODO
+    }
+
+    @Override
+    public void renderGameOver() {
+        // TODO
+    }
+
+    private String getAnsiColor(Color tileColor) {
+        String foregroundColor = "\u001B[37m"; // Default white text
+        String backgroundColor = "\u001B[40m"; // Default black background
 
         // Set foreground color
-        if (foreground.equals(Color.WHITE)) fg = "\u001B[38:5:15m";  // White text
-        if (foreground.equals(Color.YELLOW)) fg = "\u001B[30m"; // Yellow text
-        if (foreground.equals(Color.RED)) fg = "\\e[0;31m\t";  // Black text
+        if (tileColor.equals(Color.WHITE)) foregroundColor = "\u001B[38:5:15m";
+        if (tileColor.equals(Color.BLACK)) foregroundColor = "\u001B[30m";
 
         // Set background color
-        if (foreground.equals(Color.WHITE)) bg = "\u001B[48:5:166m";  // White background
-        if (foreground.equals(Color.YELLOW)) bg = "\u001B[48:5:0m";  // Black background
+        if (tileColor.equals(Color.WHITE)) backgroundColor = "\u001B[48:5:166m";
+        if (tileColor.equals(Color.BLACK)) backgroundColor = "\u001B[48:5:0m";
 
-        return bg + fg; // Combine background and foreground
+        return backgroundColor + foregroundColor;
     }
 
+    private void clearConsole() {
+        try {
+            // Clear console based on OS
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                // Or use ANSI escape codes:
+                    // System.out.print("\033[H\033[2J\033[3J");
+                    // System.out.flush();
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception innerException) {
+            // Fallback to printing newlines
+            System.out.println("\n".repeat(50));
+        }
+    }
 
-    // Test rendering for now
-    public static void main( String[] args ) throws InterruptedException {
+    public static void main(String[] args) {
 
-        DungeonConfiguration config = new DungeonConfiguration(70,35,3,3,5,12,5,5);
+        DungeonConfiguration config = new DungeonConfiguration(70, 35, 15, 7, 5, 12, 5, 5);
         Dungeon dungeon = DungeonGenerator.generateDungeon(config);
         Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
-        Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "player"); // Assuming you have a default constructor for Player
+        Player player = new Player(100, 30, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
 
         MonsterStore monsterStore = new MonsterStore(monsters);
-        GameService gameService = new GameService(player, dungeon, monsterStore);
         DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore);
+        GameService gameService = new GameService(player, dungeon, monsterStore, rd);
 
-        rd.renderDungeonToConsole();
-
-        // Simulate player movement
-        rd.renderDungeonToConsole();
+        rd.renderDungeon();
 
         Runnable r1 = () -> {
-            while(true){
+            while (true) {
                 Scanner sc = new Scanner(System.in);
                 String input = sc.next();
-                if(input.equals("w")) {
+                if (input.equals("w")) {
                     gameService.movePlayer(Direction.NORTH);
-                }else if(input.equals("s")) {
+                } else if (input.equals("s")) {
                     gameService.movePlayer(Direction.SOUTH);
-                }else if(input.equals("a")) {
+                } else if (input.equals("a")) {
                     gameService.movePlayer(Direction.WEST);
-                }else if(input.equals("d")) {
+                } else if (input.equals("d")) {
                     gameService.movePlayer(Direction.EAST);
                 }
-                rd.renderDungeonToConsole();
+                rd.requestRender();
             }
         };
 
-        Runnable r2 =
-                () -> {
-                    Random rnd = new Random();
-                    while(true){
-                        gameService.moveMonsters();
-                        try {
-                            Thread.sleep(2000);
-                        }catch(InterruptedException e){
-                            e.printStackTrace();
-                        }
-                        rd.renderDungeonToConsole();}
-                };
-        new Thread(r2).start();
+        Runnable r2 = () -> {
+            while (true) {
+                gameService.moveMonsters();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                rd.requestRender();
+            }
+        };
+
+        Runnable renderingLoop = () -> {
+            while (true) {
+                rd.renderDungeon();
+                try {
+                    Thread.sleep(UPDATE_FREQUENCY_MS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        new Thread(renderingLoop).start();
         new Thread(r1).start();
-
+        new Thread(r2).start();
     }
-
 }
