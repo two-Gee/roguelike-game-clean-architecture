@@ -1,14 +1,16 @@
 package com.example.domain.Item;
 
-public class Weapon extends Item {
-    private int damage;
+import com.example.domain.Position;
 
-    public Weapon(String name, String description, int damage, char symbol) {
-        super(name, description, symbol);
-        this.damage = damage;
+public class Weapon extends Item {
+    private int attack;
+
+    public Weapon(String name, int attack, Position position, int roomNumber) {
+        super(name, position, roomNumber);
+        this.attack = attack;
     }
 
-    public int getDamage() {
-        return this.damage;
+    public int getAttack() {
+        return this.attack;
     }
 }
