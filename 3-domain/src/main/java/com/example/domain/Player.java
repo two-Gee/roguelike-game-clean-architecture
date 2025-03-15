@@ -15,6 +15,8 @@ public class Player extends LivingEntity {
     public void equipWeapon(Weapon weapon) {
         if(equippedWeapon == null){
             weapon.setPickedUp(true);
+            weapon.setPosition(null);
+            weapon.setRoomNumber(-1);
             this.equippedWeapon = weapon;
             this.setAttack(this.getAttack() + weapon.getAttack());
         }

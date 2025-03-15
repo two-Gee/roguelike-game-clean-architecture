@@ -225,7 +225,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         Dungeon dungeon = DungeonGenerator.generateDungeon(config);
         Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
         List<Item> items = ItemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
-        Player player = new Player(100, 10, dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
+        Player player = new Player(dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
         ItemStore itemStore = new ItemStore(items);
         MonsterStore monsterStore = new MonsterStore(monsters);
         DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore, itemStore);
