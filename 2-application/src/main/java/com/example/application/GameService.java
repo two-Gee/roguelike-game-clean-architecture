@@ -1,18 +1,18 @@
 package com.example.application;
 
-import com.example.application.Factories.MonsterFactory;
+import com.example.application.monsterMovement.MonsterMovement;
+import com.example.application.playerMovement.PlayerMovement;
+import com.example.application.stores.ItemStore;
+import com.example.application.stores.MonsterStore;
 import com.example.domain.*;
-import com.example.domain.Item.Consumables;
-import com.example.domain.Item.Item;
-import com.example.domain.Item.Weapon;
-import com.example.domain.Monster.Monster;
-import com.example.domain.map.DungeonRoom;
+import com.example.domain.item.Consumables;
+import com.example.domain.item.Item;
+import com.example.domain.item.Weapon;
+import com.example.domain.monster.Monster;
 
 import java.util.*;
 
 public class GameService {
-
-    private GameState gameState;
     private Player player;
     private Dungeon dungeon;
     private MonsterStore monsterStore;
@@ -116,5 +116,22 @@ public class GameService {
 
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    public void startMonsterMovementLoop(){
+        Runnable monsterMovementLoop = () -> {
+            while (!isGameOver()) {
+                moveMonsters();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        };
+    }
+
+    public DungeonRenderer getDungeonRenderer() {
+        return dungeonRenderer;
     }
 }

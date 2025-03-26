@@ -1,17 +1,13 @@
 package com.example.adapters.ui;
 
-import com.example.application.Factories.ItemFactory;
-import com.example.application.Factories.MonsterFactory;
 import com.example.application.GameService;
-import com.example.application.ItemStore;
-import com.example.application.MonsterStore;
-import com.example.application.map.DungeonGenerator;
+import com.example.application.stores.ItemStore;
+import com.example.application.stores.MonsterStore;
 import com.example.domain.*;
-import com.example.domain.Item.Consumables;
-import com.example.domain.Item.Item;
-import com.example.domain.Item.Weapon;
-import com.example.domain.Monster.Monster;
-import com.example.domain.map.DungeonConfiguration;
+import com.example.domain.item.Consumables;
+import com.example.domain.item.Item;
+import com.example.domain.item.Weapon;
+import com.example.domain.monster.Monster;
 import com.example.domain.map.DungeonTile;
 
 import java.awt.*;
@@ -226,50 +222,11 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         }
     }
 
-    public static void main(String[] args) {
-
-        DungeonConfiguration config = new DungeonConfiguration(70, 35, 5, 3, 5, 12, 1, 1);
-        Dungeon dungeon = DungeonGenerator.generateDungeon(config);
-        Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
-        List<Item> items = ItemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
-        Player player = new Player(dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
-        ItemStore itemStore = new ItemStore(items);
-        MonsterStore monsterStore = new MonsterStore(monsters);
-        DungeonRenderer rd = new DungeonRenderer(dungeon, player, monsterStore, itemStore);
-        GameService gameService = new GameService(player, dungeon, monsterStore, itemStore, rd);
-
-        rd.renderGame();
-
-        Runnable r1 = () -> {
-            while (!gameService.isGameOver()) {
-                Scanner sc = new Scanner(System.in);
-                String input = sc.next();
-                if (input.equals("w")) {
-                    gameService.movePlayer(Direction.NORTH);
-                } else if (input.equals("s")) {
-                    gameService.movePlayer(Direction.SOUTH);
-                } else if (input.equals("a")) {
-                    gameService.movePlayer(Direction.WEST);
-                } else if (input.equals("d")) {
-                    gameService.movePlayer(Direction.EAST);
-                }
-            }
-        };
-
-        Runnable r2 = () -> {
-            while (!gameService.isGameOver()) {
-                gameService.moveMonsters();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
+    @Override
+    public void startRenderingLoop(GameService gameService){
         Runnable renderingLoop = () -> {
             while (!gameService.isGameOver()) {
-                rd.renderGame();
+                renderGame();
                 try {
                     Thread.sleep(UPDATE_FREQUENCY_MS);
                 } catch (InterruptedException e) {
@@ -277,9 +234,6 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
                 }
             }
         };
-
         new Thread(renderingLoop).start();
-        new Thread(r1).start();
-        new Thread(r2).start();
     }
 }
