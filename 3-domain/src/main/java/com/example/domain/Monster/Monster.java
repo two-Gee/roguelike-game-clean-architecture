@@ -1,12 +1,10 @@
-package com.example.domain.Monster;
+package com.example.domain.monster;
 
 
 
 import com.example.domain.*;
 
 
-import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 

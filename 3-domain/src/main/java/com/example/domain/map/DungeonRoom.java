@@ -1,12 +1,6 @@
 package com.example.domain.map;
 
-import com.example.domain.Item.Item;
-import com.example.domain.Monster.Monster;
 import com.example.domain.Position;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
 
 public class DungeonRoom {
     private int roomNumber;

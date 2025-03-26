@@ -1,7 +1,6 @@
-package com.example.application;
+package com.example.application.stores;
 
-import com.example.application.Factories.MonsterFactory;
-import com.example.domain.Monster.Monster;
+import com.example.domain.monster.Monster;
 
 import java.util.List;
 import java.util.Map;

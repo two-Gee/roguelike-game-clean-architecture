@@ -1,8 +1,8 @@
-package com.example.application;
+package com.example.application.monsterMovement;
 
 import com.example.domain.Dungeon;
-import com.example.domain.Item.Item;
-import com.example.domain.Monster.Monster;
+import com.example.domain.item.Item;
+import com.example.domain.monster.Monster;
 import com.example.domain.Player;
 import com.example.domain.Position;
 

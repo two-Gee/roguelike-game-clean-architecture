@@ -1,6 +1,6 @@
-package com.example.application;
+package com.example.application.monsterMovement;
 
-import com.example.domain.Monster.Monster;
+import com.example.domain.monster.Monster;
 import com.example.domain.MovementStrategy;
 import com.example.domain.Player;
 import com.example.domain.Position;

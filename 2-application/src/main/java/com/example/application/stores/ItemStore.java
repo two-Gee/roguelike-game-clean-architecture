@@ -1,8 +1,6 @@
-package com.example.application;
+package com.example.application.stores;
 
-import com.example.domain.Item.Consumables;
-import com.example.domain.Item.Item;
-import com.example.domain.Item.Weapon;
+import com.example.domain.item.Item;
 
 import java.util.List;
 import java.util.stream.Collectors;

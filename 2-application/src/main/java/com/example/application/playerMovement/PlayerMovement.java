@@ -1,11 +1,10 @@
-package com.example.application;
+package com.example.application.playerMovement;
 
 import com.example.domain.Direction;
 import com.example.domain.Dungeon;
-import com.example.domain.Monster.Monster;
+import com.example.domain.monster.Monster;
 import com.example.domain.Player;
 import com.example.domain.Position;
-import com.example.domain.map.DungeonRoom;
 
 import java.util.List;
 

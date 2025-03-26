@@ -32,7 +32,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.0.0</version>
         <configuration>
-          <mainClass>com.example.adapters.ui.DungeonRenderer</mainClass>
+          <mainClass>com.example.adapters.Main</mainClass>
         </configuration>
       </plugin>
     </plugins>

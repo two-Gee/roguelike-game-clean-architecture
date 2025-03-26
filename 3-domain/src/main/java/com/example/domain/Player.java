@@ -1,6 +1,6 @@
 package com.example.domain;
 
-import com.example.domain.Item.Weapon;
+import com.example.domain.item.Weapon;
 
 
 public class Player extends LivingEntity {

@@ -1,6 +1,6 @@
-package com.example.application.Factories;
+package com.example.application.factories;
 
-import com.example.domain.Item.*;
+import com.example.domain.item.*;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonRoom;
 

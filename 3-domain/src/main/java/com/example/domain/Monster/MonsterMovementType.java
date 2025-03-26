@@ -1,4 +1,4 @@
-package com.example.domain.Monster;
+package com.example.domain.monster;
 
 public enum MonsterMovementType {
     STATIONARY,

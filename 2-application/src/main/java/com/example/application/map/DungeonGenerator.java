@@ -1,9 +1,6 @@
 package com.example.application.map;
 
-import com.example.application.Factories.MonsterFactory;
 import com.example.domain.Dungeon;
-import com.example.domain.LivingEntity;
-import com.example.domain.Monster.Monster;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonConfiguration;
 import com.example.domain.map.DungeonRoom;
