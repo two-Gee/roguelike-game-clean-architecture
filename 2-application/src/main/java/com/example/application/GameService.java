@@ -18,12 +18,14 @@ public class GameService {
     private MonsterStore monsterStore;
     private ItemStore itemStore;
     private DungeonRenderer dungeonRenderer;
+    private boolean gameOver;
     public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore,ItemStore itemStore, DungeonRenderer dungeonRenderer) {
         this.player = player;
         this.dungeon = dungeon;
         this.monsterStore = monsterStore;
         this.itemStore = itemStore;
         this.dungeonRenderer = dungeonRenderer;
+        gameOver=false;
     }
 
     public void movePlayer(Direction direction){
@@ -47,6 +49,7 @@ public class GameService {
                     monsterStore.remove(monster.getId());
                     dungeonRenderer.renderDeathOfMonster(monster);
                 }
+                checkForWin();
                 return;
             }
         }
@@ -73,6 +76,7 @@ public class GameService {
         }
         playerMovement.moveInDirection(direction);
         dungeonRenderer.renderDungeon();
+
     }
 
     public void moveMonsters(){
@@ -82,10 +86,7 @@ public class GameService {
                 if(monster.getPosition().isAdjacent(player.getPosition())){
                     monster.attack(player);
                     dungeonRenderer.renderAttack(monster, player);
-                    if(player.isDead()){
-                        dungeonRenderer.renderGameOver();
-                        return;
-                    }
+                    if(checkGameLost(player)) return;
                 }else{
                     MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(player.getRoomNumber()), itemStore.findByRoomNumber(player.getRoomNumber()));
                     monsterMovement.move();
@@ -94,5 +95,26 @@ public class GameService {
             }
             if(renderDungeon) dungeonRenderer.renderDungeon();
         }
+    }
+
+    private boolean checkGameLost(Player player){
+        if(player.isDead()){
+            dungeonRenderer.renderGameLost();
+            gameOver=true;
+            return true;
+        }
+        return false;
+    }
+
+
+    private void checkForWin(){
+        if(monsterStore.getMonsters().isEmpty()){
+            dungeonRenderer.renderWin();
+            gameOver=true;
+        }
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }

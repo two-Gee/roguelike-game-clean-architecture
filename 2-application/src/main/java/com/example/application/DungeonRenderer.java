@@ -9,7 +9,8 @@ public interface DungeonRenderer {
     public void renderDungeon();
     public void renderAttack(LivingEntity attacker, LivingEntity target);
     public void renderDeathOfMonster(Monster monster);
-    public void renderGameOver();
+    public void renderGameLost();
+    public void renderWin();
     public void renderWeaponPickup(Weapon weapon);
     public void renderUseOfConsumable(Consumables consumable);
 }

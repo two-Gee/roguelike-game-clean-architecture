@@ -147,8 +147,15 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
     }
 
     @Override
-    public void renderGameOver() {
-        // TODO
+    public void renderGameLost() {
+        clearConsole();
+        System.out.println("Game Over! You have lost the game!");
+    }
+
+    @Override
+    public void renderWin() {
+        clearConsole();
+        System.out.println("Congratulations! You have won the game!");
     }
 
     @Override
@@ -221,7 +228,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
 
     public static void main(String[] args) {
 
-        DungeonConfiguration config = new DungeonConfiguration(70, 35, 15, 7, 5, 12, 5, 5);
+        DungeonConfiguration config = new DungeonConfiguration(70, 35, 5, 3, 5, 12, 1, 1);
         Dungeon dungeon = DungeonGenerator.generateDungeon(config);
         Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
         List<Item> items = ItemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
@@ -234,7 +241,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         rd.renderGame();
 
         Runnable r1 = () -> {
-            while (true) {
+            while (!gameService.isGameOver()) {
                 Scanner sc = new Scanner(System.in);
                 String input = sc.next();
                 if (input.equals("w")) {
@@ -250,7 +257,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         };
 
         Runnable r2 = () -> {
-            while (true) {
+            while (!gameService.isGameOver()) {
                 gameService.moveMonsters();
                 try {
                     Thread.sleep(2000);
@@ -261,7 +268,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         };
 
         Runnable renderingLoop = () -> {
-            while (true) {
+            while (!gameService.isGameOver()) {
                 rd.renderGame();
                 try {
                     Thread.sleep(UPDATE_FREQUENCY_MS);
