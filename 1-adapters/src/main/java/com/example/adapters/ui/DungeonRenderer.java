@@ -119,28 +119,6 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         requestRender();
     }
 
-    @Override
-    public void renderAttack(LivingEntity attacker, LivingEntity target) {
-        String attackNotification = attacker.getName() + " attacks " + target.getName() + "! " + target.getName() + " took " + attacker.getAttack() + " damage.";
-        notificationContainer.addNotification(attackNotification);
-
-        requestRender();
-
-        // Remove notification after 5 seconds
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                notificationContainer.removeNotification(attackNotification);
-                requestRender();
-            }
-        }, 5000);
-    }
-
-    @Override
-    public void renderDeathOfMonster(Monster monster) {
-        // TODO
-    }
 
     @Override
     public void renderGameLost() {
@@ -154,7 +132,8 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         System.out.println("Congratulations! You have won the game!");
     }
 
-    private void updateNotifications (String notification){
+    @Override
+    public void renderNotification(String notification){
         notificationContainer.addNotification(notification);
         requestRender();
         // Remove notification after 5 seconds
@@ -169,23 +148,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
 
     }
 
-    @Override
-    public void renderWeaponPickup(Weapon weapon) {
-        String attackNotification = "Player picked up a weapon! " + weapon.getName() + " adds " + weapon.getAttack() + " attack damage.";
-        updateNotifications(attackNotification);
-    }
 
-    @Override
-    public void renderWeaponSwitch(Weapon weapon) {
-        String attackNotification = "Player switched weapon! " + weapon.getName() + " adds " + weapon.getAttack() + " attack damage.";
-        updateNotifications(attackNotification);
-    }
-
-    @Override
-    public void renderUseOfConsumable(Consumables consumable) {
-        String attackNotification = "Player used a consumable! " + consumable.getName() + " heals " + consumable.getHealthPoints() + " health.";
-        updateNotifications(attackNotification);
-    }
 
     private String getAnsiColor(Color tileColor) {
         String foregroundColor = "\u001B[37m"; // Default white text

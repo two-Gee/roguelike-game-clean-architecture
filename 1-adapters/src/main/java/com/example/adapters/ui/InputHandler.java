@@ -18,6 +18,7 @@ public class InputHandler{
                     case "s" -> gameService.movePlayer(Direction.SOUTH);
                     case "a" -> gameService.movePlayer(Direction.WEST);
                     case "d" -> gameService.movePlayer(Direction.EAST);
+                    case "e" -> gameService.pickUpItem();
                 }
             }
         };

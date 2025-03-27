@@ -33,10 +33,8 @@ public class GameService {
         List<Item> itemsInCurrentRoom;
         if(player.getRoomNumber() != -1){
             monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
-            itemsInCurrentRoom = itemStore.findByRoomNumber(player.getRoomNumber());
         }else{
             monstersInCurrentRoom = new ArrayList<>();
-            itemsInCurrentRoom = new ArrayList<>();
         }
         PlayerMovement playerMovement = new PlayerMovement(player, dungeon, monstersInCurrentRoom);
         Position newPos = player.getPosition().getAdjacentPosition(direction);
@@ -44,35 +42,12 @@ public class GameService {
         for(Monster monster : monstersInCurrentRoom){
             if(monster.getPosition().equals(newPos)){
                 player.attack(monster);
-                dungeonRenderer.renderAttack(player, monster);
+                dungeonRenderer.renderNotification(player.getName() + " attacks " + monster.getName() + "! " + monster.getName() + " took " + player.getAttack() + " damage.");
                 if(monster.isDead()){
                     monsterStore.remove(monster.getId());
-                    dungeonRenderer.renderDeathOfMonster(monster);
+                    dungeonRenderer.renderNotification(player.getName() + " killed " + monster.getName() + "!");
                 }
                 checkForWin();
-                return;
-            }
-        }
-
-        for(Item item : itemsInCurrentRoom){
-            if(item.getPosition().equals(newPos)){
-                if(item instanceof Weapon){
-                    if(player.getEquippedWeapon() != null){
-                        Weapon weapon = player.unEquipWeapon();
-                        weapon.setPosition(item.getPosition());
-                        weapon.setRoomNumber(item.getRoomNumber());
-                        itemStore.add(weapon);
-                        dungeonRenderer.renderWeaponSwitch((Weapon) item);
-                    }else{
-                        dungeonRenderer.renderWeaponPickup((Weapon) item);
-                    }
-                    player.equipWeapon((Weapon) item);
-                    itemStore.remove(item);
-                }else if(item instanceof Consumables){
-                    player.heal(((Consumables) item).getHealthPoints());
-                    itemStore.remove(item);
-                    dungeonRenderer.renderUseOfConsumable((Consumables) item);
-                }
                 return;
             }
         }
@@ -81,13 +56,45 @@ public class GameService {
 
     }
 
+    public void pickUpItem(){
+        List<Item> itemsInCurrentRoom;
+        if(player.getRoomNumber() != -1){
+            itemsInCurrentRoom = itemStore.findByRoomNumber(player.getRoomNumber());
+        }else{
+            itemsInCurrentRoom = new ArrayList<>();
+        }
+        for(Item item : itemsInCurrentRoom){
+            if(item.getPosition().isAdjacent(player.getPosition())){
+                if(item instanceof Weapon weaponNew){
+                    if(player.getEquippedWeapon() != null){
+                        Weapon weapon = player.unEquipWeapon();
+                        weapon.setPosition(item.getPosition());
+                        weapon.setRoomNumber(item.getRoomNumber());
+                        itemStore.add(weapon);
+                        dungeonRenderer.renderNotification("Player switched weapon! " + weaponNew.getName() + " adds " + weaponNew.getAttack() + " attack damage.");
+                    }else{
+                        dungeonRenderer.renderNotification("Player picked up a weapon! " + weaponNew.getName() + " adds " + weaponNew.getAttack() + " attack damage.");
+                    }
+                    player.equipWeapon(weaponNew);
+                    itemStore.remove(weaponNew);
+                }else if(item instanceof Consumables consumables){
+                    player.heal(consumables.getHealthPoints());
+                    itemStore.remove(item);
+                    dungeonRenderer.renderNotification("Player used a consumable! " + consumables.getName() + " heals " + consumables.getHealthPoints() + " health.");
+                }
+                return;
+            }
+        }
+        dungeonRenderer.renderNotification("No item to pick up");
+    }
+
     public void moveMonsters(){
         if(player.getRoomNumber()  != -1){
             boolean renderDungeon = false;
             for (Monster monster : monsterStore.findByRoomNumber(player.getRoomNumber())){
                 if(monster.getPosition().isAdjacent(player.getPosition())){
                     monster.attack(player);
-                    dungeonRenderer.renderAttack(monster, player);
+                    dungeonRenderer.renderNotification(monster.getName() + " attacks " + player.getName() + "! " + player.getName() + " took " + monster.getAttack() + " damage.");
                     if(checkGameLost(player)) return;
                 }else{
                     MonsterMovement monsterMovement = new MonsterMovement(monster, player, dungeon, monsterStore.findByRoomNumber(player.getRoomNumber()), itemStore.findByRoomNumber(player.getRoomNumber()));
@@ -120,20 +127,23 @@ public class GameService {
         return gameOver;
     }
 
-    public void startMonsterMovementLoop(){
+
+
+    public DungeonRenderer getDungeonRenderer() {
+        return dungeonRenderer;
+    }
+
+    public static void startMonsterMovementLoop(GameService gameService){
         Runnable monsterMovementLoop = () -> {
-            while (!isGameOver()) {
-                moveMonsters();
+            while (!gameService.isGameOver()) {
+                gameService.moveMonsters();
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
         };
-    }
-
-    public DungeonRenderer getDungeonRenderer() {
-        return dungeonRenderer;
+        new Thread(monsterMovementLoop).start();
     }
 }

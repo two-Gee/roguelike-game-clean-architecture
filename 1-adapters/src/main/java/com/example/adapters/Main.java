@@ -27,7 +27,7 @@ public class Main {
 
         gameService.getDungeonRenderer().startRenderingLoop(gameService);
         InputHandler.startPlayerInputLoop(gameService);
-        gameService.startMonsterMovementLoop();
+        GameService.startMonsterMovementLoop(gameService);
     }
 
     public static GameService initGameService(DungeonConfiguration config) {

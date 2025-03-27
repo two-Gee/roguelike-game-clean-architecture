@@ -7,12 +7,8 @@ import com.example.domain.monster.Monster;
 
 public interface DungeonRenderer {
     public void renderDungeon();
-    public void renderAttack(LivingEntity attacker, LivingEntity target);
-    public void renderDeathOfMonster(Monster monster);
     public void renderGameLost();
     public void renderWin();
-    public void renderWeaponPickup(Weapon weapon);
-    public void renderWeaponSwitch(Weapon weapon);
-    public void renderUseOfConsumable(Consumables consumable);
+    public void renderNotification(String message);
     public void startRenderingLoop(GameService gameService);
 }
