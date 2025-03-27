@@ -2,11 +2,13 @@ package com.example.adapters.ui;
 
 import com.example.application.GameService;
 import com.example.domain.Direction;
+import com.example.domain.Dungeon;
 
 import java.util.Scanner;
 
 public class InputHandler{
     public static void startPlayerInputLoop(GameService gameService){
+        OutputUtils.clearConsole();
         Runnable playerInputLoop = () -> {
             Scanner sc = new Scanner(System.in);
             while (!gameService.isGameOver()) {
@@ -23,8 +25,14 @@ public class InputHandler{
     }
 
     public static String getLevelDifficulty(){
+        OutputUtils.clearConsole();
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter the level difficulty (easy, medium, hard): ");
-        return sc.next();
+        String difficulty = sc.next();
+        while (!difficulty.equals("easy") && !difficulty.equals("medium") && !difficulty.equals("hard")){
+            System.out.println("Invalid difficulty. Please enter easy, medium, or hard: ");
+            difficulty = sc.next();
+        }
+        return difficulty;
     }
 }

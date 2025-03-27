@@ -88,7 +88,7 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
 
         // Only update if the new render is different
         if (!newRenderBuffer.toString().contentEquals(previousRenderBuffer)) {
-            clearConsole();
+            OutputUtils.clearConsole();
             System.out.println(newRenderBuffer);
             previousRenderBuffer.setLength(0);
             previousRenderBuffer.append(newRenderBuffer);
@@ -144,13 +144,13 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
 
     @Override
     public void renderGameLost() {
-        clearConsole();
+        OutputUtils.clearConsole();
         System.out.println("Game Over! You have lost the game!");
     }
 
     @Override
     public void renderWin() {
-        clearConsole();
+        OutputUtils.clearConsole();
         System.out.println("Congratulations! You have won the game!");
     }
 
@@ -205,22 +205,6 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         return backgroundColor + foregroundColor;
     }
 
-    private void clearConsole() {
-        try {
-            // Clear console based on OS
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                // Or use ANSI escape codes:
-                    // System.out.print("\033[H\033[2J\033[3J");
-                    // System.out.flush();
-                new ProcessBuilder("clear").inheritIO().start().waitFor();
-            }
-        } catch (Exception innerException) {
-            // Fallback to printing newlines
-            System.out.println("\n".repeat(50));
-        }
-    }
 
     @Override
     public void startRenderingLoop(GameService gameService){
