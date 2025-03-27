@@ -154,40 +154,37 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         System.out.println("Congratulations! You have won the game!");
     }
 
-    @Override
-    public void renderWeaponPickup(Weapon weapon) {
-        String attackNotification = "Player picked up a weapon! " + weapon.getName() + " adds " + weapon.getAttack() + " attack damage.";
-        notificationContainer.addNotification(attackNotification);
-
+    private void updateNotifications (String notification){
+        notificationContainer.addNotification(notification);
         requestRender();
-
         // Remove notification after 5 seconds
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                notificationContainer.removeNotification(attackNotification);
+                notificationContainer.removeNotification(notification);
                 requestRender();
             }
         }, 5000);
+
+    }
+
+    @Override
+    public void renderWeaponPickup(Weapon weapon) {
+        String attackNotification = "Player picked up a weapon! " + weapon.getName() + " adds " + weapon.getAttack() + " attack damage.";
+        updateNotifications(attackNotification);
+    }
+
+    @Override
+    public void renderWeaponSwitch(Weapon weapon) {
+        String attackNotification = "Player switched weapon! " + weapon.getName() + " adds " + weapon.getAttack() + " attack damage.";
+        updateNotifications(attackNotification);
     }
 
     @Override
     public void renderUseOfConsumable(Consumables consumable) {
         String attackNotification = "Player used a consumable! " + consumable.getName() + " heals " + consumable.getHealthPoints() + " health.";
-        notificationContainer.addNotification(attackNotification);
-
-        requestRender();
-
-        // Remove notification after 5 seconds
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                notificationContainer.removeNotification(attackNotification);
-                requestRender();
-            }
-        }, 5000);
+        updateNotifications(attackNotification);
     }
 
     private String getAnsiColor(Color tileColor) {

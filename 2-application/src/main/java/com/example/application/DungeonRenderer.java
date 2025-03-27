@@ -12,6 +12,7 @@ public interface DungeonRenderer {
     public void renderGameLost();
     public void renderWin();
     public void renderWeaponPickup(Weapon weapon);
+    public void renderWeaponSwitch(Weapon weapon);
     public void renderUseOfConsumable(Consumables consumable);
     public void startRenderingLoop(GameService gameService);
 }

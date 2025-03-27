@@ -62,10 +62,12 @@ public class GameService {
                         weapon.setPosition(item.getPosition());
                         weapon.setRoomNumber(item.getRoomNumber());
                         itemStore.add(weapon);
+                        dungeonRenderer.renderWeaponSwitch((Weapon) item);
+                    }else{
+                        dungeonRenderer.renderWeaponPickup((Weapon) item);
                     }
                     player.equipWeapon((Weapon) item);
                     itemStore.remove(item);
-                    dungeonRenderer.renderWeaponPickup((Weapon) item);
                 }else if(item instanceof Consumables){
                     player.heal(((Consumables) item).getHealthPoints());
                     itemStore.remove(item);
