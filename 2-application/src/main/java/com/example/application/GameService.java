@@ -1,5 +1,7 @@
 package com.example.application;
 
+import com.example.application.map.FovCache;
+import com.example.application.map.FovCalculator;
 import com.example.application.monsterMovement.MonsterMovement;
 import com.example.application.playerMovement.PlayerMovement;
 import com.example.application.stores.ItemStore;
@@ -13,19 +15,24 @@ import com.example.domain.monster.Monster;
 import java.util.*;
 
 public class GameService {
+    private FovCalculator fovCalculator;
     private Player player;
     private Dungeon dungeon;
     private MonsterStore monsterStore;
     private ItemStore itemStore;
     private DungeonRenderer dungeonRenderer;
     private boolean gameOver;
-    public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore,ItemStore itemStore, DungeonRenderer dungeonRenderer) {
+    public GameService(Player player, Dungeon dungeon, MonsterStore monsterStore,ItemStore itemStore, DungeonRenderer dungeonRenderer, FovCache fovCache) {
         this.player = player;
         this.dungeon = dungeon;
         this.monsterStore = monsterStore;
         this.itemStore = itemStore;
         this.dungeonRenderer = dungeonRenderer;
         gameOver=false;
+        this.fovCalculator = new FovCalculator(dungeon, fovCache);
+
+        Position spawnPoint = dungeon.getPlayerSpawnPoint();
+        this.fovCalculator.calculateFov(spawnPoint.getxPos(), spawnPoint.getyPos(), 5);
     }
 
     public void movePlayer(Direction direction){
@@ -52,6 +59,8 @@ public class GameService {
             }
         }
         playerMovement.moveInDirection(direction);
+        fovCalculator.calculateFov(player.getPosition().getxPos(), player.getPosition().getyPos(), 5);
+
         dungeonRenderer.renderDungeon();
 
     }

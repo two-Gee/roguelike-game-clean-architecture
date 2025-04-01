@@ -5,6 +5,7 @@ import com.example.adapters.ui.InputHandler;
 import com.example.application.factories.ItemFactory;
 import com.example.application.factories.MonsterFactory;
 import com.example.application.GameService;
+import com.example.application.map.FovCache;
 import com.example.application.stores.ItemStore;
 import com.example.application.LevelSelection;
 import com.example.application.stores.MonsterStore;
@@ -38,8 +39,9 @@ public class Main {
         List<Item> items = ItemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
         ItemStore itemStore = new ItemStore(items);
         MonsterStore monsterStore = new MonsterStore(monsters);
+        FovCache fovCache = new FovCache(dungeon.getWidth(), dungeon.getHeight());
 
-        DungeonRenderer dungeonRenderer = new DungeonRenderer(dungeon, player, monsterStore, itemStore);
-        return new GameService(player, dungeon, monsterStore, itemStore, dungeonRenderer);
+        DungeonRenderer dungeonRenderer = new DungeonRenderer(dungeon, player, monsterStore, itemStore, fovCache);
+        return new GameService(player, dungeon, monsterStore, itemStore, dungeonRenderer, fovCache);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.adapters.ui;
 
 import com.example.application.GameService;
+import com.example.application.map.FovCache;
 import com.example.application.stores.ItemStore;
 import com.example.application.stores.MonsterStore;
 import com.example.domain.*;
@@ -20,15 +21,17 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
     private MonsterStore monsterStore;
     private ItemStore itemStore;
     private NotificationContainer notificationContainer;
+    private FovCache fovCache;
     private volatile boolean needsRender = true;
     private StringBuilder previousRenderBuffer;
     private static final int UPDATE_FREQUENCY_MS = 50;
 
-    public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore, ItemStore itemStore) {
+    public DungeonRenderer(Dungeon dungeon, Player player, MonsterStore monsterStore, ItemStore itemStore, FovCache fovCache) {
         this.dungeon = dungeon;
         this.player = player;
         this.monsterStore = monsterStore;
         this.itemStore = itemStore;
+        this.fovCache = fovCache;
         this.notificationContainer = new NotificationContainer();
         this.previousRenderBuffer = new StringBuilder();
     }
@@ -44,21 +47,31 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         for (int y = 0; y < dungeon.getHeight(); y++) {
             for (int x = 0; x < dungeon.getWidth(); x++) {
                 Position currentTile = new Position(x, y);
-                DungeonTile t = dungeon.getTile(currentTile);
-                Color tileColor = t.getColour();
+                DungeonTile t = fovCache.isExplored(x,y) ? dungeon.getTile(currentTile) : DungeonTile.Unknown;
+                Color tileColor = t.getColour(fovCache.isInFov(x, y) ? DungeonTile.TileColorType.Primary :
+                        DungeonTile.TileColorType.Secondary);
                 String displayCharacter = t.getDisplayCharacter();
 
                 // Check if player is on current tile
                 if (player.getPosition().equals(currentTile)) {
                     displayCharacter = DungeonTile.Player.getDisplayCharacter();
-                    tileColor = DungeonTile.Player.getColour();
+                    tileColor = DungeonTile.Player.getColour(fovCache.isInFov(x, y) ? DungeonTile.TileColorType.Primary :
+                            DungeonTile.TileColorType.Secondary);
                 } else {
+                    // Check if tile is in player Fov, only render monsters and item in player field of view
+
                     // Check if monster is on current tile
                     List<Monster> monsterList = monsterStore.getMonsters();
                     for (Monster monster : monsterList) {
                         if (monster.getPosition().equals(currentTile)) {
-                            displayCharacter = DungeonTile.Monster.getDisplayCharacter();
-                            tileColor = DungeonTile.Monster.getColour();
+                            if (fovCache.isInFov(x, y)) {
+                                displayCharacter = DungeonTile.Monster.getDisplayCharacter();
+                            } else if (fovCache.isExplored(x, y)) {
+                                displayCharacter = DungeonTile.Floor.getDisplayCharacter();
+                            } else {
+                                displayCharacter = DungeonTile.Unknown.getDisplayCharacter();
+                                tileColor = DungeonTile.Unknown.getColour(DungeonTile.TileColorType.Primary);
+                            }
                             break;
                         }
                     }
@@ -67,13 +80,24 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
                     for (Item item : items) {
                         if (item.getPosition().equals(currentTile)) {
                             if (item instanceof Weapon) {
-                                displayCharacter = DungeonTile.Weapon.getDisplayCharacter();
-                                tileColor = DungeonTile.Weapon.getColour();
+                                if (fovCache.isInFov(x, y)) {
+                                    displayCharacter = DungeonTile.Weapon.getDisplayCharacter();
+                                } else if (fovCache.isExplored(x, y)) {
+                                    displayCharacter = DungeonTile.Floor.getDisplayCharacter();
+                                } else {
+                                    displayCharacter = DungeonTile.Unknown.getDisplayCharacter();
+                                    tileColor = DungeonTile.Unknown.getColour(DungeonTile.TileColorType.Primary);
+                                }
                             } else if (item instanceof Consumables) {
-                                displayCharacter = DungeonTile.Consumable.getDisplayCharacter();
-                                tileColor = DungeonTile.Consumable.getColour();
+                                if (fovCache.isInFov(x, y)) {
+                                    displayCharacter = DungeonTile.Consumable.getDisplayCharacter();
+                                } else if (fovCache.isExplored(x, y)) {
+                                    displayCharacter = DungeonTile.Floor.getDisplayCharacter();
+                                } else {
+                                    displayCharacter = DungeonTile.Unknown.getDisplayCharacter();
+                                    tileColor = DungeonTile.Unknown.getColour(DungeonTile.TileColorType.Primary);
+                                }
                             }
-                            break;
                         }
                     }
                 }
@@ -119,7 +143,6 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         requestRender();
     }
 
-
     @Override
     public void renderGameLost() {
         OutputUtils.clearConsole();
@@ -155,16 +178,22 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
         String backgroundColor = "\u001B[40m"; // Default black background
 
         // Set foreground color
-        if (tileColor.equals(Color.WHITE)) foregroundColor = "\u001B[38:5:15m";
+        if (tileColor.equals(Color.WHITE)) foregroundColor = "\u001B[97m";
+        if (tileColor.equals(Color.YELLOW)) foregroundColor = "\u001B[93m";
+        if (tileColor.equals(Color.ORANGE)) foregroundColor = "\u001B[33m";
+        if (tileColor.equals(Color.LIGHT_GRAY)) foregroundColor = "\u001B[90m";
         if (tileColor.equals(Color.BLACK)) foregroundColor = "\u001B[30m";
+        if (tileColor.equals(Color.DARK_GRAY)) foregroundColor = "\u001B[90m";
+        if (tileColor.equals(Color.RED)) foregroundColor = "\u001B[95m";
 
         // Set background color
-        if (tileColor.equals(Color.WHITE)) backgroundColor = "\u001B[48:5:166m";
-        if (tileColor.equals(Color.BLACK)) backgroundColor = "\u001B[48:5:0m";
+        if (tileColor.equals(Color.BLACK)) backgroundColor = "\u001B[30m";
+        if (tileColor.equals(Color.YELLOW)) backgroundColor = "\u001B[93m";
+        if (tileColor.equals(Color.ORANGE)) backgroundColor = "\u001B[33m";
+        if (tileColor.equals(Color.DARK_GRAY)) backgroundColor = "\u001B[90m";
 
         return backgroundColor + foregroundColor;
     }
-
 
     @Override
     public void startRenderingLoop(GameService gameService){
