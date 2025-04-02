@@ -117,8 +117,8 @@ public class GameService {
 
     private boolean checkGameLost(Player player){
         if(player.isDead()){
-            dungeonRenderer.renderGameLost();
             gameOver=true;
+            dungeonRenderer.renderGameLost();
             return true;
         }
         return false;
