@@ -146,7 +146,17 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
     @Override
     public void renderGameLost() {
         OutputUtils.clearConsole();
-        System.out.println("Game Over! You have lost the game!");
+
+        String gameOverText = """
+         ██████   █████  ███    ███ ███████      ██████  ██    ██ ███████ ██████  
+        ██       ██   ██ ████  ████ ██          ██    ██ ██    ██ ██      ██   ██ 
+        ██   ███ ███████ ██ ████ ██ █████       ██    ██ ██    ██ █████   ██████  
+        ██    ██ ██   ██ ██  ██  ██ ██          ██    ██  ██  ██  ██      ██   ██ 
+         ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██""";
+
+        System.out.println(gameOverText);
+        System.out.println("\nYou have lost the game!");
+
     }
 
     @Override
