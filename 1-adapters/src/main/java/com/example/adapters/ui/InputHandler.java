@@ -26,12 +26,10 @@ public class InputHandler{
     }
 
     public static String getLevelDifficulty(){
-        OutputUtils.clearConsole();
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter the level difficulty (easy, medium, hard): ");
         String difficulty = sc.next();
-        while (!difficulty.equals("easy") && !difficulty.equals("medium") && !difficulty.equals("hard")){
-            System.out.println("Invalid difficulty. Please enter easy, medium, or hard: ");
+        while (!difficulty.equals("1") && !difficulty.equals("2") && !difficulty.equals("3")){
+            System.out.println("Invalid difficulty. Please enter 1, 2, or 3: ");
             difficulty = sc.next();
         }
         return difficulty;
