@@ -2,6 +2,7 @@ package com.example.adapters;
 
 import com.example.adapters.ui.DungeonRenderer;
 import com.example.adapters.ui.InputHandler;
+import com.example.adapters.ui.OutputUtils;
 import com.example.application.factories.ItemFactory;
 import com.example.application.factories.MonsterFactory;
 import com.example.application.GameService;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 public class Main {
     public static void main(String[] args) {
+        OutputUtils.renderStartScreen();
         DungeonConfiguration config = LevelSelection.selectLevel(InputHandler.getLevelDifficulty());
 
         GameService gameService = initGameService(config);
