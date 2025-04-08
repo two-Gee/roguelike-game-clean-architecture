@@ -52,8 +52,9 @@ public class DungeonGenerator {
             int width = (count == 0) ? 4 : rand.nextInt(dungeonConfiguration.getMaxRoomSize() - dungeonConfiguration.getMinRoomSize() + 1) + dungeonConfiguration.getMinRoomSize();
             int height = (count == 0) ? 4 : rand.nextInt(dungeonConfiguration.getMaxRoomSize() - dungeonConfiguration.getMinRoomSize() + 1) + dungeonConfiguration.getMinRoomSize();
             // Room location
-            int x = rand.nextInt(dungeonConfiguration.getWidth() - width);
-            int y = rand.nextInt(dungeonConfiguration.getHeight() - height);
+
+            int x = rand.nextInt(dungeonConfiguration.getWidth() - width - 2) + 1;
+            int y = rand.nextInt(dungeonConfiguration.getHeight() - height - 2) + 1;
             
             DungeonRoom room = new DungeonRoom(x, y, width, height, count);
 
