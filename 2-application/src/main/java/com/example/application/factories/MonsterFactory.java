@@ -3,8 +3,7 @@ package com.example.application.factories;
 import com.example.application.monsterMovement.ApproachMovementStrategy;
 import com.example.application.monsterMovement.RandomMovementStrategy;
 import com.example.application.monsterMovement.StationaryMovementStrategy;
-import com.example.domain.monster.Monster;
-import com.example.domain.monster.MonsterTypes;
+import com.example.domain.monster.*;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonRoom;
 
@@ -14,10 +13,9 @@ import java.util.stream.Collectors;
 public class MonsterFactory {
     public static Monster createMonster(MonsterTypes type, int roomID, Position position){
         return switch (type) {
-            case GOBLIN -> new Monster("Goblin", 10, 5, roomID, position, new ApproachMovementStrategy());
-            case ORC -> new Monster("Orc", 15, 8, roomID, position, new RandomMovementStrategy());
-            case TROLL -> new Monster("Troll", 20, 10, roomID, position, new StationaryMovementStrategy());
-            default -> throw new IllegalArgumentException();
+            case GOBLIN -> new Goblin(roomID, position, new ApproachMovementStrategy());
+            case ORC -> new Orc(roomID, position, new RandomMovementStrategy());
+            case TROLL -> new Troll(roomID, position, new StationaryMovementStrategy());
         };
     }
 
