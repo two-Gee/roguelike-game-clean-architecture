@@ -8,10 +8,8 @@ import com.example.domain.monster.MonsterTypes;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonRoom;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MonsterFactory {
     public static Monster createMonster(MonsterTypes type, int roomID, Position position){
@@ -23,10 +21,16 @@ public class MonsterFactory {
         };
     }
 
-    public static Monster createRandomMonster(DungeonRoom room){
-        int x = (int) (Math.random() * (room.getBottomRightCorner().getxPos() - room.getTopLeftCorner().getxPos()) + room.getTopLeftCorner().getxPos());
-        int y = (int) (Math.random() * (room.getBottomRightCorner().getyPos() - room.getTopLeftCorner().getyPos()) + room.getTopLeftCorner().getyPos());
-        Position position = new Position(x, y);
+    public static Monster createRandomMonster(DungeonRoom room, Set<Position> occupiedPositions){
+        Position position;
+        boolean positionOccupied;
+
+        do {
+            int x = (int) (Math.random() * (room.getBottomRightCorner().getxPos() - room.getTopLeftCorner().getxPos()) + room.getTopLeftCorner().getxPos());
+            int y = (int) (Math.random() * (room.getBottomRightCorner().getyPos() - room.getTopLeftCorner().getyPos()) + room.getTopLeftCorner().getyPos());
+            position = new Position(x, y);
+            positionOccupied = occupiedPositions.contains(position);
+        } while (positionOccupied);
 
         int random = (int)(Math.random() * MonsterTypes.values().length);
         return createMonster(MonsterTypes.values()[random], room.getRoomNumber(), position);
@@ -36,7 +40,8 @@ public class MonsterFactory {
         Map<UUID, Monster> monsters = new HashMap<>();
 
         for (int i = 0; i < amount; i++) {
-            Monster monster = createRandomMonster(room);
+            Set<Position> occupiedPositions = monsters.values().stream().map(Monster::getPosition).collect(Collectors.toSet());
+            Monster monster = createRandomMonster(room, occupiedPositions);
             monsters.put(monster.getId(), monster);
         }
         return monsters;

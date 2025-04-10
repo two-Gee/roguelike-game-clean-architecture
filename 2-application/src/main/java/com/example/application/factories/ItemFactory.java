@@ -7,6 +7,8 @@ import com.example.domain.map.DungeonRoom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ItemFactory {
     public static Item createItem(ItemTypes type, Position position, int roomNumber) {
@@ -19,7 +21,7 @@ public class ItemFactory {
         };
     }
 
-    public static Item createRandomItem(DungeonRoom room, List<Item> existingItems) {
+    public static Item createRandomItem(DungeonRoom room, Set<Position> occupiedPositions) {
         Position position;
         boolean positionOccupied;
 
@@ -27,8 +29,7 @@ public class ItemFactory {
             int x = (int) (Math.random() * (room.getBottomRightCorner().getxPos() - room.getTopLeftCorner().getxPos()) + room.getTopLeftCorner().getxPos());
             int y = (int) (Math.random() * (room.getBottomRightCorner().getyPos() - room.getTopLeftCorner().getyPos()) + room.getTopLeftCorner().getyPos());
             position = new Position(x, y);
-            final Position finalPosition = position;
-            positionOccupied = existingItems.stream().anyMatch(item -> item.getPosition().equals(finalPosition));
+            positionOccupied = occupiedPositions.contains(position);
         } while (positionOccupied);
 
         int random = (int) (Math.random() * ItemTypes.values().length);
@@ -39,7 +40,8 @@ public class ItemFactory {
         List<Item> items = new ArrayList<>();
 
         for (int i = 0; i < amount; i++) {
-            items.add(createRandomItem(room, items));
+            Set<Position> occupiedPositions = items.stream().map(Item::getPosition).collect(Collectors.toSet());
+            items.add(createRandomItem(room, occupiedPositions));
         }
         return items;
     }
