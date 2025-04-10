@@ -24,10 +24,5 @@ public class Monster extends LivingEntity {
 
     public Position getNextPosition(Player player) {
         return movementStrategy.getNextPosition(this, player);
-    }
-    //    public void moveRandom(){
-//        Random rnd = new Random();
-//        int randomNumber = rnd.nextInt(4);
-//        super.move(Direction.values()[randomNumber]);
-//    }
+    };
 }
