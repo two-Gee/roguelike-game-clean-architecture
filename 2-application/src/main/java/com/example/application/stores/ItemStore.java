@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemStore {
-    private static List<Item> items;
+    private List<Item> items;
 
     public ItemStore(List<Item> items) {
         this.items = items;
