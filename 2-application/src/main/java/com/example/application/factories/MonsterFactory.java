@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MonsterFactory {
-    public static Monster createMonster(MonsterTypes type, int roomID, Position position){
+    public Monster createMonster(MonsterTypes type, int roomID, Position position){
         return switch (type) {
             case GOBLIN -> new Goblin(roomID, position, new ApproachMovementStrategy());
             case ORC -> new Orc(roomID, position, new RandomMovementStrategy());
@@ -19,14 +19,14 @@ public class MonsterFactory {
         };
     }
 
-    public static Monster createRandomMonster(DungeonRoom room, Set<Position> occupiedPositions){
+    public Monster createRandomMonster(DungeonRoom room, Set<Position> occupiedPositions){
         Position position = PositionGenerator.generateRandomPosition(room, occupiedPositions);
 
         int random = (int)(Math.random() * MonsterTypes.values().length);
         return createMonster(MonsterTypes.values()[random], room.getRoomNumber(), position);
     }
 
-    public static Map<UUID, Monster> createMonstersForRoom(int amount, DungeonRoom room){
+    public Map<UUID, Monster> createMonstersForRoom(int amount, DungeonRoom room){
         Map<UUID, Monster> monsters = new HashMap<>();
 
         for (int i = 0; i < amount; i++) {
@@ -38,7 +38,7 @@ public class MonsterFactory {
     }
 
 
-    public static Map<UUID, Monster> createMonsters(int maxRoomMonsters, Map<Integer, DungeonRoom> dungeonRooms) {
+    public Map<UUID, Monster> createMonsters(int maxRoomMonsters, Map<Integer, DungeonRoom> dungeonRooms) {
         Map<UUID, Monster> monsters = new HashMap<>();
         Random random = new Random();
 

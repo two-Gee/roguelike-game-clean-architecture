@@ -37,8 +37,10 @@ public class Main {
         Dungeon dungeon = DungeonGenerator.generateDungeon(config);
 
         Player player = new Player(dungeon.getRoomForPosition(dungeon.getPlayerSpawnPoint()).getRoomNumber(), dungeon.getPlayerSpawnPoint(), "Player");
-        Map<UUID, Monster> monsters = MonsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
-        List<Item> items = ItemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
+        MonsterFactory monsterFactory = new MonsterFactory();
+        Map<UUID, Monster> monsters = monsterFactory.createMonsters(config.getMaxRoomMonsters(), dungeon.getDungeonRooms());
+        ItemFactory itemFactory = new ItemFactory();
+        List<Item> items = itemFactory.createItems(config.getMaxRoomItems(), dungeon.getDungeonRooms().values().stream().toList());
         ItemStore itemStore = new ItemStore(items);
         MonsterStore monsterStore = new MonsterStore(monsters);
         FovCache fovCache = new FovCache(dungeon.getWidth(), dungeon.getHeight());

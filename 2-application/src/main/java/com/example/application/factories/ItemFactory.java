@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ItemFactory {
-    public static Item createItem(ItemTypes type, Position position, int roomNumber) {
+
+    public Item createItem(ItemTypes type, Position position, int roomNumber) {
         return switch (type) {
             case POTION -> new Potion(position, roomNumber);
             case BREAD -> new Bread(position, roomNumber);
@@ -21,14 +22,14 @@ public class ItemFactory {
         };
     }
 
-    public static Item createRandomItem(DungeonRoom room, Set<Position> occupiedPositions) {
+    public Item createRandomItem(DungeonRoom room, Set<Position> occupiedPositions) {
         Position position = PositionGenerator.generateRandomPosition(room, occupiedPositions);
 
         int random = (int) (Math.random() * ItemTypes.values().length);
         return createItem(ItemTypes.values()[random], position, room.getRoomNumber());
     }
 
-    public static List<Item> createItemsForRoom(int amount, DungeonRoom room) {
+    public List<Item> createItemsForRoom(int amount, DungeonRoom room) {
         List<Item> items = new ArrayList<>();
 
         for (int i = 0; i < amount; i++) {
@@ -38,7 +39,7 @@ public class ItemFactory {
         return items;
     }
 
-    public static List<Item> createItems(int maxRoomItems, List<DungeonRoom> dungeonRooms) {
+    public List<Item> createItems(int maxRoomItems, List<DungeonRoom> dungeonRooms) {
         List<Item> items = new ArrayList<>();
         Random random = new Random();
 
