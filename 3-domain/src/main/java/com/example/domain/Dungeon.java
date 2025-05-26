@@ -7,20 +7,13 @@ import com.example.domain.map.DungeonTile;
 import java.util.Map;
 
 public class Dungeon {
-//    private int level;
-//    private int difficulty;
-    private int itemAmount;
     private DungeonTile[][] dungeonTiles;
     private int width;
     private int height;
     private Map<Integer, DungeonRoom> dungeonRooms;
     private Position playerSpawnPoint;
 
-// TODO add items, level and difficulty
     public Dungeon(DungeonTile[][] dungeonTiles, int width, int height, Map<Integer, DungeonRoom> dungeonRooms, Position playerSpawnPoint) {
-//        this.level = level;
-//        this.difficulty = difficulty;
-//        this.itemAmount = itemAmount;
         this.dungeonTiles = dungeonTiles;
         this.width = width;
         this.height = height;
@@ -59,16 +52,5 @@ public class Dungeon {
 
     public Map<Integer, DungeonRoom> getDungeonRooms() {
         return dungeonRooms;
-    }
-
-    public DungeonRoom getRoomByRoomNumber(int roomNumber) {
-        return dungeonRooms.get(roomNumber);
-    }
-
-    public Position getRandomPositionInRoom(int roomNumber){
-        DungeonRoom room = dungeonRooms.get(roomNumber);
-        int x = (int) (Math.random() * (room.getBottomRightCorner().getX_POS() - room.getTopLeftCorner().getX_POS()) + room.getTopLeftCorner().getX_POS());
-        int y = (int) (Math.random() * (room.getBottomRightCorner().getY_POS() - room.getTopLeftCorner().getY_POS()) + room.getTopLeftCorner().getY_POS());
-        return new Position(x, y);
     }
 }
