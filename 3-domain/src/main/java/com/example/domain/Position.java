@@ -1,27 +1,41 @@
 package com.example.domain;
 
-public class Position {
-    private int xPos;
-    private int yPos;
+import java.util.Objects;
+
+public final class Position {
+    private final int xPos;
+    private final int yPos;
 
     public Position(int xPos, int yPos) {
+        if(xPos < 0 || yPos < 0) {
+            throw new IllegalArgumentException("Position coordinates cannot be negative: " +
+                    "xPos = " + xPos + ", yPos = " + yPos);
+        }
         this.xPos = xPos;
         this.yPos = yPos;
     }
 
     public int getxPos() {
-        return xPos;
+        return this.xPos;
     }
 
 
     public int getyPos() {
-        return yPos;
+        return this.yPos;
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Position position = (Position) o;
+        return getxPos() == position.getxPos() && getyPos() == position.getyPos();
+    }
 
-    public boolean equals(Position position) {
-        return this.xPos == position.getxPos() && this.yPos == position.getyPos();
+    @Override
+    public int hashCode() {
+        return Objects.hash(getxPos(), getyPos());
     }
 
     public boolean isAdjacent(Position position) {
@@ -43,6 +57,6 @@ public class Position {
         return null;
     }
     public String toString(){
-        return "x: " + xPos + " y: " + yPos;
+        return "x: " + this.xPos + " y: " + this.yPos;
     }
 }
