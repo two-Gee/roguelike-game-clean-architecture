@@ -28,7 +28,7 @@ public class Main {
 
         GameService gameService = initGameService(config);
 
-        gameService.getDungeonRenderer().startRenderingLoop(gameService);
+        gameService.getDungeonRenderer().startRenderingLoop(gameService.getGameStateService());
         InputHandler.startPlayerInputLoop(gameService);
         GameService.startMonsterMovementLoop(gameService);
     }

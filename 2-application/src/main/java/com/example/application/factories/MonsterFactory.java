@@ -1,8 +1,8 @@
 package com.example.application.factories;
 
-import com.example.application.monsterMovement.ApproachMovementStrategy;
-import com.example.application.monsterMovement.RandomMovementStrategy;
-import com.example.application.monsterMovement.StationaryMovementStrategy;
+import com.example.application.monsterService.monsterMovementStrategies.ApproachMovementStrategy;
+import com.example.application.monsterService.monsterMovementStrategies.RandomMovementStrategy;
+import com.example.application.monsterService.monsterMovementStrategies.StationaryMovementStrategy;
 import com.example.domain.monster.*;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonRoom;

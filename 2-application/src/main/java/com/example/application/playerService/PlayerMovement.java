@@ -1,21 +1,16 @@
-package com.example.application.playerMovement;
+package com.example.application.playerService;
 
 import com.example.domain.Direction;
 import com.example.domain.Dungeon;
-import com.example.domain.monster.Monster;
 import com.example.domain.Player;
 import com.example.domain.Position;
 
-import java.util.List;
-
 public class PlayerMovement {
     private Dungeon dungeon;
-    private List<Monster> monsters;
     private Player player;
 
-    public PlayerMovement(Player player, Dungeon dungeon, List<Monster> monsters) {
+    public PlayerMovement(Player player, Dungeon dungeon) {
         this.dungeon = dungeon;
-        this.monsters = monsters;
         this.player = player;
     }
 

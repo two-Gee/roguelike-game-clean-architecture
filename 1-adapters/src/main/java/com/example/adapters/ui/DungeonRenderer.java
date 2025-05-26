@@ -1,6 +1,7 @@
 package com.example.adapters.ui;
 
 import com.example.application.GameService;
+import com.example.application.GameStateService;
 import com.example.application.map.FovCache;
 import com.example.application.stores.ItemStore;
 import com.example.application.stores.MonsterStore;
@@ -206,9 +207,9 @@ public class DungeonRenderer implements com.example.application.DungeonRenderer 
     }
 
     @Override
-    public void startRenderingLoop(GameService gameService){
+    public void startRenderingLoop(GameStateService gameStateService){
         Runnable renderingLoop = () -> {
-            while (!gameService.isGameOver()) {
+            while (!gameStateService.isGameOver()) {
                 renderGame();
                 try {
                     Thread.sleep(UPDATE_FREQUENCY_MS);

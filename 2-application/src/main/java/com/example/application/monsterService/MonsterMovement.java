@@ -1,4 +1,4 @@
-package com.example.application.monsterMovement;
+package com.example.application.monsterService;
 
 import com.example.domain.Dungeon;
 import com.example.domain.item.Item;

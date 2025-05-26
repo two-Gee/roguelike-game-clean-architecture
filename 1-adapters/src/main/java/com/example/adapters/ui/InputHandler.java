@@ -1,23 +1,23 @@
 package com.example.adapters.ui;
 
 import com.example.application.GameService;
+import com.example.application.GameStateService;
 import com.example.domain.Direction;
-import com.example.domain.Dungeon;
 
 import java.util.Scanner;
 
 public class InputHandler{
-    public static void startPlayerInputLoop(GameService gameService){
+    public static void startPlayerInputLoop(GameService gameService) {
         OutputUtils.clearConsole();
         Runnable playerInputLoop = () -> {
             Scanner sc = new Scanner(System.in);
-            while (!gameService.isGameOver()) {
+            while (!gameService.getGameStateService().isGameOver()) {
                 String input = sc.next();
                 switch (input) {
-                    case "w" -> gameService.movePlayer(Direction.NORTH);
-                    case "s" -> gameService.movePlayer(Direction.SOUTH);
-                    case "a" -> gameService.movePlayer(Direction.WEST);
-                    case "d" -> gameService.movePlayer(Direction.EAST);
+                    case "w" -> gameService.handlePlayer(Direction.NORTH);
+                    case "s" -> gameService.handlePlayer(Direction.SOUTH);
+                    case "a" -> gameService.handlePlayer(Direction.WEST);
+                    case "d" -> gameService.handlePlayer(Direction.EAST);
                     case "e" -> gameService.pickUpItem();
                 }
             }

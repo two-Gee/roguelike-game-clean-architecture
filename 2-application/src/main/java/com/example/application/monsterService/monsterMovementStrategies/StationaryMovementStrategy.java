@@ -1,4 +1,4 @@
-package com.example.application.monsterMovement;
+package com.example.application.monsterService.monsterMovementStrategies;
 
 import com.example.domain.monster.Monster;
 import com.example.domain.MovementStrategy;

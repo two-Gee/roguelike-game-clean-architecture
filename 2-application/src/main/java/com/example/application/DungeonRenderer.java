@@ -5,5 +5,5 @@ public interface DungeonRenderer {
     public void renderGameLost();
     public void renderWin();
     public void renderNotification(String message);
-    public void startRenderingLoop(GameService gameService);
+    public void startRenderingLoop(GameStateService gameStateService);
 }
