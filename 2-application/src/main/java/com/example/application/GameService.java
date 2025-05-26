@@ -32,7 +32,7 @@ public class GameService {
         this.fovCalculator = new FovCalculator(dungeon, fovCache);
 
         Position spawnPoint = dungeon.getPlayerSpawnPoint();
-        this.fovCalculator.calculateFov(spawnPoint.getxPos(), spawnPoint.getyPos(), 5);
+        this.fovCalculator.calculateFov(spawnPoint.getX_POS(), spawnPoint.getY_POS(), 5);
     }
 
     public void movePlayer(Direction direction){
@@ -59,7 +59,7 @@ public class GameService {
             }
         }
         playerMovement.moveInDirection(direction);
-        fovCalculator.calculateFov(player.getPosition().getxPos(), player.getPosition().getyPos(), 5);
+        fovCalculator.calculateFov(player.getPosition().getX_POS(), player.getPosition().getY_POS(), 5);
 
         dungeonRenderer.renderDungeon();
 

@@ -88,8 +88,8 @@ public class DungeonGenerator {
 
     private void generateRoom(DungeonRoom room, Map<Integer, DungeonRoom> dungeonRooms) {
         // Carve room in the map
-        for (int y = room.getTopLeftCorner().getyPos(); y <= room.getBottomRightCorner().getyPos(); y++) {
-            for (int x = room.getTopLeftCorner().getxPos(); x <= room.getBottomRightCorner().getxPos(); x++) {
+        for (int y = room.getTopLeftCorner().getY_POS(); y <= room.getBottomRightCorner().getY_POS(); y++) {
+            for (int x = room.getTopLeftCorner().getX_POS(); x <= room.getBottomRightCorner().getX_POS(); x++) {
                 this.dungeonTiles[y][x] = DungeonTile.Floor;
             }
         }
@@ -107,11 +107,11 @@ public class DungeonGenerator {
         Position prevRoomCenter = prevRoom.getRoomCenter();
 
         if(rand.nextInt(2) == 1) {
-            generateHTunnel(prevRoomCenter.getxPos(), roomCenter.getxPos(), prevRoomCenter.getyPos());
-            generateVTunnel(prevRoomCenter.getyPos(), roomCenter.getyPos(), roomCenter.getxPos());
+            generateHTunnel(prevRoomCenter.getX_POS(), roomCenter.getX_POS(), prevRoomCenter.getY_POS());
+            generateVTunnel(prevRoomCenter.getY_POS(), roomCenter.getY_POS(), roomCenter.getX_POS());
         } else {
-            generateVTunnel(prevRoomCenter.getyPos(), roomCenter.getyPos(), prevRoomCenter.getxPos());
-            generateHTunnel(prevRoomCenter.getxPos(), roomCenter.getxPos(), roomCenter.getyPos());
+            generateVTunnel(prevRoomCenter.getY_POS(), roomCenter.getY_POS(), prevRoomCenter.getX_POS());
+            generateHTunnel(prevRoomCenter.getX_POS(), roomCenter.getX_POS(), roomCenter.getY_POS());
         }
     }
 

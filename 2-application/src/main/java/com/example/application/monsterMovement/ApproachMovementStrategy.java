@@ -10,13 +10,13 @@ public class ApproachMovementStrategy implements MovementStrategy {
     public Position getNextPosition(Monster monster, Player player) {
         Position playerPos = player.getPosition();
         Position monsterPos = monster.getPosition();
-        int xDiff = playerPos.getxPos() - monsterPos.getxPos();
-        int yDiff = playerPos.getyPos() - monsterPos.getyPos();
+        int xDiff = playerPos.getX_POS() - monsterPos.getX_POS();
+        int yDiff = playerPos.getY_POS() - monsterPos.getY_POS();
 
         if (Math.abs(xDiff) > Math.abs(yDiff)) {
-            return new Position(monsterPos.getxPos() + Integer.signum(xDiff), monsterPos.getyPos());
+            return new Position(monsterPos.getX_POS() + Integer.signum(xDiff), monsterPos.getY_POS());
         } else {
-            return new Position(monsterPos.getxPos(), monsterPos.getyPos() + Integer.signum(yDiff));
+            return new Position(monsterPos.getX_POS(), monsterPos.getY_POS() + Integer.signum(yDiff));
         }
     }
 }

@@ -31,7 +31,7 @@ public class FovCalculator {
 
                 for(Position point : line.getPoints()) {
                     DungeonTile tile = dungeon.getTile(point);
-                    cache.updateFovData(point.getxPos(), point.getyPos(), true);
+                    cache.updateFovData(point.getX_POS(), point.getY_POS(), true);
 
                     if(tile.getBlocksSight()) break;
                 }

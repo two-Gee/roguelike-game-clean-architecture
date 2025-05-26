@@ -17,7 +17,7 @@ public class DungeonRoom {
         return roomNumber;
     }
     public Position getRoomCenter() {
-        return new Position((topLeftCorner.getxPos() + bottomRightCorner.getxPos())/2, (topLeftCorner.getyPos() + bottomRightCorner.getyPos())/2);
+        return new Position((topLeftCorner.getX_POS() + bottomRightCorner.getX_POS())/2, (topLeftCorner.getY_POS() + bottomRightCorner.getY_POS())/2);
     }
 
     public Position getTopLeftCorner() {
@@ -30,15 +30,15 @@ public class DungeonRoom {
 
     // Returns true if room intersects another room
     public boolean intersectsOtherRoom(DungeonRoom other) {
-        return topLeftCorner.getxPos() <= other.bottomRightCorner.getxPos() + 1 &&
-                bottomRightCorner.getxPos() >= other.topLeftCorner.getxPos() - 1 &&
-                topLeftCorner.getyPos() <= other.bottomRightCorner.getyPos() + 1 &&
-                bottomRightCorner.getyPos() >= other.topLeftCorner.getyPos() - 1;
+        return topLeftCorner.getX_POS() <= other.bottomRightCorner.getX_POS() + 1 &&
+                bottomRightCorner.getX_POS() >= other.topLeftCorner.getX_POS() - 1 &&
+                topLeftCorner.getY_POS() <= other.bottomRightCorner.getY_POS() + 1 &&
+                bottomRightCorner.getY_POS() >= other.topLeftCorner.getY_POS() - 1;
     }
 
     public boolean containsPosition(Position position){
-        return position.getxPos() >= topLeftCorner.getxPos() && position.getxPos() <= bottomRightCorner.getxPos() &&
-                position.getyPos() >= topLeftCorner.getyPos() && position.getyPos() <= bottomRightCorner.getyPos();
+        return position.getX_POS() >= topLeftCorner.getX_POS() && position.getX_POS() <= bottomRightCorner.getX_POS() &&
+                position.getY_POS() >= topLeftCorner.getY_POS() && position.getY_POS() <= bottomRightCorner.getY_POS();
     }
 
 }

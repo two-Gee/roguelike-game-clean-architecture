@@ -15,10 +15,10 @@ public class RandomMovementStrategy implements MovementStrategy {
         Position monsterPos = monster.getPosition();
         int direction = random.nextInt(4);
         switch (direction) {
-            case 0: return new Position(monsterPos.getxPos() + 1, monsterPos.getyPos());
-            case 1: return new Position(monsterPos.getxPos() - 1, monsterPos.getyPos());
-            case 2: return new Position(monsterPos.getxPos(), monsterPos.getyPos() + 1);
-            case 3: return new Position(monsterPos.getxPos(), monsterPos.getyPos() - 1);
+            case 0: return new Position(monsterPos.getX_POS() + 1, monsterPos.getY_POS());
+            case 1: return new Position(monsterPos.getX_POS() - 1, monsterPos.getY_POS());
+            case 2: return new Position(monsterPos.getX_POS(), monsterPos.getY_POS() + 1);
+            case 3: return new Position(monsterPos.getX_POS(), monsterPos.getY_POS() - 1);
             default: return monsterPos;
         }
     }

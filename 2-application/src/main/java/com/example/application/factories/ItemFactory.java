@@ -26,8 +26,8 @@ public class ItemFactory {
         boolean positionOccupied;
 
         do {
-            int x = (int) (Math.random() * (room.getBottomRightCorner().getxPos() - room.getTopLeftCorner().getxPos()) + room.getTopLeftCorner().getxPos());
-            int y = (int) (Math.random() * (room.getBottomRightCorner().getyPos() - room.getTopLeftCorner().getyPos()) + room.getTopLeftCorner().getyPos());
+            int x = (int) (Math.random() * (room.getBottomRightCorner().getX_POS() - room.getTopLeftCorner().getX_POS()) + room.getTopLeftCorner().getX_POS());
+            int y = (int) (Math.random() * (room.getBottomRightCorner().getY_POS() - room.getTopLeftCorner().getY_POS()) + room.getTopLeftCorner().getY_POS());
             position = new Position(x, y);
             positionOccupied = occupiedPositions.contains(position);
         } while (positionOccupied);
