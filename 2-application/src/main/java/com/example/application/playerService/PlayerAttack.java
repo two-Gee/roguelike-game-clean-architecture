@@ -23,7 +23,7 @@ public class PlayerAttack {
     }
 
     public void attackMonster(Position position){
-        monstersInCurrentRoom = getMonstersInCurrentRoom();
+        monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
 
         for(Monster monster : monstersInCurrentRoom){
             if(monster.getPosition().equals(position)){
@@ -43,13 +43,5 @@ public class PlayerAttack {
             monsterStore.remove(monster.getId());
             dungeonRenderer.renderNotification(player.getName() + " killed " + monster.getName() + "!");
 
-    }
-
-    private List<Monster> getMonstersInCurrentRoom() {
-        if (player.getRoomNumber() != -1) {
-            return monsterStore.findByRoomNumber(player.getRoomNumber());
-        } else {
-            return new ArrayList<>();
-        }
     }
 }
