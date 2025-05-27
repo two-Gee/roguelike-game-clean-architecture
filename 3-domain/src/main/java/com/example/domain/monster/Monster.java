@@ -8,7 +8,7 @@ import com.example.domain.*;
 import java.util.UUID;
 
 
-public class Monster extends LivingEntity {
+public abstract class Monster extends LivingEntity {
     private UUID id;
     private MovementStrategy movementStrategy;
 
