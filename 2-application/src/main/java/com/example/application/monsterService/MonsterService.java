@@ -29,7 +29,7 @@ public class MonsterService {
     }
 
     public void handleMonster(GameStateService gameStateService) {
-        monstersInCurrentRoom = getMonstersInCurrentRoom();
+        monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
 
         if(!monstersInCurrentRoom.isEmpty()) {
             boolean renderDungeon = false;
@@ -45,14 +45,6 @@ public class MonsterService {
                 }
             }
             if (renderDungeon) dungeonRenderer.renderDungeon();
-        }
-    }
-
-    private List<Monster> getMonstersInCurrentRoom() {
-        if (player.getRoomNumber() != -1) {
-            return monsterStore.findByRoomNumber(player.getRoomNumber());
-        } else {
-            return new ArrayList<>();
         }
     }
 }

@@ -2,6 +2,7 @@ package com.example.application.stores;
 
 import com.example.domain.monster.Monster;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -14,6 +15,9 @@ public class MonsterStore {
     }
 
     public List<Monster> findByRoomNumber(int roomNumber) {
+        if (roomNumber < 0) {
+            return new ArrayList<>();
+        }
         return monsters.values().stream()
                 .filter(monster -> monster.getRoomNumber() ==(roomNumber))
                 .toList();
