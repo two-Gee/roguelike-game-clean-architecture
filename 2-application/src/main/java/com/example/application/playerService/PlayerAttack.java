@@ -12,18 +12,16 @@ import java.util.List;
 public class PlayerAttack {
     private Player player;
     private MonsterStore monsterStore;
-    private List<Monster> monstersInCurrentRoom;
     private DungeonRenderer dungeonRenderer;
 
     public PlayerAttack(Player player, MonsterStore monsterStore, DungeonRenderer dungeonRenderer) {
         this.player = player;
         this.monsterStore = monsterStore;
         this.dungeonRenderer = dungeonRenderer;
-        this.monstersInCurrentRoom = new ArrayList<>();
     }
 
     public void attackMonster(Position position){
-        monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
+        List<Monster> monstersInCurrentRoom = monsterStore.findByRoomNumber(player.getRoomNumber());
 
         for(Monster monster : monstersInCurrentRoom){
             if(monster.getPosition().equals(position)){
