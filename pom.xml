@@ -4,8 +4,8 @@
   <artifactId>roguelike-game-clean-architecture</artifactId>
   <packaging>pom</packaging>
   <properties>
-    <maven.compiler.source>23</maven.compiler.source>
-    <maven.compiler.target>23</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
   </properties>
   <version>1.0-SNAPSHOT</version>
   <name>roguelike-game-clean-architecture</name>
@@ -31,8 +31,8 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.8.1</version>
         <configuration>
-          <source>23</source>
-          <target>23</target>
+          <source>21</source>
+          <target>21</target>
         </configuration>
       </plugin>
       <plugin>
