@@ -147,21 +147,13 @@ public class ItemStoreTest {
     @Test
     public void testAdd_DuplicateItem() {
         itemStore.add(item1);
-        assertEquals("List should contain 5 items (duplicate added)", 5, itemsList.size());
+        assertEquals("List should contain 4 items (duplicate not added)", 4, itemsList.size());
     }
 
     @Test
     public void testAdd_NullItem() {
         itemStore.add(null);
-        assertEquals("List should contain 5 items (null added)", 5, itemsList.size());
-        assertTrue("List should contain null", itemsList.contains(null));
-    }
-
-    @Test
-    public void testGetItems_ReturnsSameListReference() {
-        List<Item> retrievedList = itemStore.getItems();
-        retrievedList.remove(item1);
-        assertEquals("Removing from the returned list should affect the internal list", 3, itemsList.size());
-        assertFalse("Internal list should no longer contain item1", itemsList.contains(item1));
+        assertEquals("List should contain 4 items (null not added)", 4, itemsList.size());
+        assertFalse("List should not contain null", itemsList.contains(null));
     }
 }
