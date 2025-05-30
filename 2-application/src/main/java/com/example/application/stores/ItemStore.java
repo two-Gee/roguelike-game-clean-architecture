@@ -26,6 +26,8 @@ public class ItemStore {
         return items;
     }
     public void add(Item item){
-        items.add(item);
+        if(item != null && !items.contains(item)) {
+            items.add(item);
+        }
     }
 }
