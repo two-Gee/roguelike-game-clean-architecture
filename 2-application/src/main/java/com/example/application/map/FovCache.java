@@ -10,14 +10,6 @@ public class FovCache {
 
     private boolean fovEnabled = true;
 
-    public boolean isFovEnabled() {
-        return fovEnabled;
-    }
-
-    public void setFovEnabled(boolean fovEnabled) {
-        this.fovEnabled = fovEnabled;
-    }
-
     public FovCache(int width, int height) {
         this.width = width;
         this.height = height;

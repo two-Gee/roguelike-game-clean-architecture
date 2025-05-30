@@ -1,7 +1,5 @@
 package com.example.domain;
 
-import java.util.UUID;
-
 public class LivingEntity {
 
     private String name;
@@ -45,10 +43,6 @@ public class LivingEntity {
 
     public boolean isDead() {
         return isDead;
-    }
-
-    public boolean isAtPosition(Position position) {
-            return this.position.equals(position);
     }
 
     public int getRoomNumber() {
