@@ -30,7 +30,6 @@ public class MonsterStoreTest {
 
         mockMovementStrategy = mock(MovementStrategy.class);
 
-        // Mock Monster instances
         monster1 = mock(Monster.class, withSettings()
                 .useConstructor("Goblin", 10, 5, 1, new Position(0, 0), mockMovementStrategy)
                 .defaultAnswer(CALLS_REAL_METHODS));

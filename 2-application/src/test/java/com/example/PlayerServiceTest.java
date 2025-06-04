@@ -10,11 +10,14 @@ import com.example.domain.Position;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class PlayerServiceTest {
 
     @Mock private Player mockPlayer;
@@ -29,8 +32,6 @@ public class PlayerServiceTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
         when(mockPlayer.getPosition()).thenReturn(mockPlayerCurrentPosition);
         when(mockPlayerCurrentPosition.getAdjacentPosition(any(Direction.class))).thenReturn(mockNextPosition);
 
