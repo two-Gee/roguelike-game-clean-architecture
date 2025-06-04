@@ -6,9 +6,13 @@ public class DungeonRoom {
     private int roomNumber;
     private Position topLeftCorner;
     private Position bottomRightCorner;
+    private int width;
+    private int height;
 
     public DungeonRoom(int x, int y, int width, int height, int roomNumber) {
         this.roomNumber = roomNumber;
+        this.width = width;
+        this.height = height;
         topLeftCorner = new Position(x, y);
         bottomRightCorner = new Position(x + width, y + height);
     }
@@ -20,6 +24,12 @@ public class DungeonRoom {
         return new Position((topLeftCorner.getX_POS() + bottomRightCorner.getX_POS())/2, (topLeftCorner.getY_POS() + bottomRightCorner.getY_POS())/2);
     }
 
+    public int getWidth() {
+        return width;
+    }
+    public int getHeight() {
+        return height;
+    }
     public Position getTopLeftCorner() {
         return topLeftCorner;
     }

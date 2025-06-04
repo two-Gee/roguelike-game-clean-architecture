@@ -29,6 +29,10 @@ public class Dungeon {
         return height;
     }
 
+    public DungeonTile[][] getDungeonTiles() {
+        return dungeonTiles;
+    }
+
     public Position getPlayerSpawnPoint() {
         return playerSpawnPoint;
     }
