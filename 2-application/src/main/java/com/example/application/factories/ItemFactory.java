@@ -18,7 +18,6 @@ public class ItemFactory {
             case BREAD -> new Bread(position, roomNumber);
             case SWORD -> new Sword(position, roomNumber);
             case AXE -> new Axe(position, roomNumber);
-            default -> throw new IllegalArgumentException("Invalid item type: " + type);
         };
     }
 

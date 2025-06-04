@@ -8,8 +8,6 @@ public class FovCache {
     private final int width;
     private final int height;
 
-    private boolean fovEnabled = true;
-
     public FovCache(int width, int height) {
         this.width = width;
         this.height = height;
@@ -70,8 +68,6 @@ public class FovCache {
             return false;
         }
 
-        if(!fovEnabled) return true;
-
         return isVisible[x + y * width];
     }
 
@@ -80,8 +76,6 @@ public class FovCache {
             System.out.printf("Unable to determine IsExplored for x=%d, y=%d because it is outside of IsExplored cache map: width=%d, height=%d", x, y, width, height);
             return false;
         }
-
-        if(!fovEnabled) return true;
 
         return isExplored[x + y * width];
     }

@@ -6,7 +6,6 @@ import com.example.domain.Player;
 import com.example.domain.Position;
 import com.example.domain.monster.Monster;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerAttack {
