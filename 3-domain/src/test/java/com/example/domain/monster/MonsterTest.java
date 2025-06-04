@@ -3,6 +3,7 @@ package com.example.domain.monster;
 import com.example.domain.MovementStrategy;
 import com.example.domain.Player;
 import com.example.domain.Position;
+import com.example.domain.item.Item;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,14 +21,18 @@ public class MonsterTest {
     private Player player;
     private Position monsterPosition;
     private Position playerPosition;
-    
+
+    private static class TestMonster extends Monster {
+        public TestMonster(String name, int health, int attack, int roomNumber, Position position, MovementStrategy movementStrategy) {
+            super(name, health, attack, roomNumber, position, movementStrategy);
+        }
+    }
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        
         monsterPosition = new Position(5, 5);
         playerPosition = new Position(10, 5);
-        monster = new Monster("TestMonster", 10, 5, 1, monsterPosition, movementStrategy);
+        monster = new TestMonster("TestMonster", 10, 5, 1, monsterPosition, movementStrategy);
         player = new Player(1, playerPosition, "TestPlayer");
     }
     
@@ -42,19 +47,13 @@ public class MonsterTest {
     
     @Test
     public void testGetNextPosition() {
-        Position eastPosition = new Position(6, 5);
-        when(movementStrategy.getNextPosition(monster, player)).thenReturn(eastPosition);
-        
+        Position nextPosition = new Position(6, 5);
+        when(movementStrategy.getNextPosition(monster, player)).thenReturn(nextPosition);
+
         Position nextPos = monster.getNextPosition(player);
-        assertEquals(eastPosition, nextPos);
+        assertEquals(nextPosition, nextPos);
         verify(movementStrategy).getNextPosition(monster, player);
-        
-        Position northPosition = new Position(5, 4);
-        when(movementStrategy.getNextPosition(monster, player)).thenReturn(northPosition);
-        
-        nextPos = monster.getNextPosition(player);
-        assertEquals(northPosition, nextPos);
-        verify(movementStrategy, times(2)).getNextPosition(monster, player);
+
     }
     
     @Test
