@@ -18,6 +18,9 @@ import org.junit.runners.Suite;
         ItemFactoryTest.class,
         MonsterFactoryTest.class,
         PositionGeneratorTest.class,
+        GameStateServiceTest.class,
+        LevelSelectionTest.class,
+        GameServiceTest.class,
 
 })
 public class MainTest {
