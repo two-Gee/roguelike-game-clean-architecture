@@ -63,21 +63,16 @@ public class MonsterServiceTest {
         adjacentPosition = new Position(5, 6);  // Adjacent to playerPosition
         distantPosition = new Position(10, 10); // Not adjacent to playerPosition
         
-        // Setup player mock
         when(player.getPosition()).thenReturn(playerPosition);
         when(player.getRoomNumber()).thenReturn(1);
         when(player.getName()).thenReturn("Player");
-        
-        // Setup monster mocks
+
         when(adjacentMonster.getPosition()).thenReturn(adjacentPosition);
         when(adjacentMonster.getName()).thenReturn("AdjacentMonster");
         when(adjacentMonster.getAttack()).thenReturn(10);
         
         when(distantMonster.getPosition()).thenReturn(distantPosition);
         when(distantMonster.getName()).thenReturn("DistantMonster");
-        
-        // No need to mock isAdjacent method as we're using real Position objects
-        // that have the real implementation of isAdjacent
         
         monsters = new ArrayList<>();
         monsters.add(adjacentMonster);
