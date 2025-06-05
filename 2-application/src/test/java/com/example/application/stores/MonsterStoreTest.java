@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.stores;
 
-import com.example.application.stores.MonsterStore;
 import com.example.domain.MovementStrategy;
 import com.example.domain.Position;
 import com.example.domain.monster.Monster;

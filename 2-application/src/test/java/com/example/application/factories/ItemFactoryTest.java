@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.factories;
 
-import com.example.application.factories.ItemFactory;
 import com.example.domain.Position;
 import com.example.domain.item.Item;
 import com.example.domain.item.ItemTypes;

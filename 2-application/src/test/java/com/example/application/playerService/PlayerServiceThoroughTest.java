@@ -1,7 +1,6 @@
-package com.example;
+package com.example.application.playerService;
 
 import com.example.application.DungeonRenderer;
-import com.example.application.playerService.PlayerService;
 import com.example.application.stores.MonsterStore;
 import com.example.domain.Direction;
 import com.example.domain.Dungeon;
@@ -12,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.ArgumentCaptor;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

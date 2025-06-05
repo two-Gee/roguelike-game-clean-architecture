@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.factories;
 
-import com.example.application.factories.MonsterFactory;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonRoom;
 import com.example.domain.monster.Goblin;

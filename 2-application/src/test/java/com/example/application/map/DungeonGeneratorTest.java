@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.map;
 
-import com.example.application.map.DungeonGenerator;
 import com.example.domain.Dungeon;
 import com.example.domain.Position;
 import com.example.domain.map.DungeonConfiguration;

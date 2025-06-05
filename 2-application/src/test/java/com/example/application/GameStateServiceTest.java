@@ -1,7 +1,5 @@
-package com.example;
+package com.example.application;
 
-import com.example.application.DungeonRenderer;
-import com.example.application.GameStateService;
 import com.example.application.stores.MonsterStore;
 import com.example.domain.Player;
 import com.example.domain.monster.Monster;

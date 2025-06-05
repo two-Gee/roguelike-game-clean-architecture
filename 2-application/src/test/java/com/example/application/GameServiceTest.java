@@ -1,7 +1,5 @@
-package com.example;
+package com.example.application;
 
-import com.example.application.DungeonRenderer;
-import com.example.application.GameService;
 import com.example.application.map.FovCache;
 import com.example.application.stores.ItemStore;
 import com.example.application.stores.MonsterStore;

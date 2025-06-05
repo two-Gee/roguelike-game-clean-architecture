@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.playerService;
 
-import com.example.application.playerService.PlayerMovement;
 import com.example.domain.Direction;
 import com.example.domain.Dungeon;
 import com.example.domain.Player;

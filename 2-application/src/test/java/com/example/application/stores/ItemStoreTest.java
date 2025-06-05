@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.stores;
 
-import com.example.application.stores.ItemStore;
 import com.example.domain.Position;
 import com.example.domain.item.Item;
 import org.junit.Before;

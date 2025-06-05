@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application.map;
 
-import com.example.application.map.FovCache;
 import org.junit.Before;
 import org.junit.Test;
 

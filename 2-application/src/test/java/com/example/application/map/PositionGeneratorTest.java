@@ -1,4 +1,4 @@
-package com.example;
+package com.example.application.map;
 
 import com.example.application.factories.PositionGenerator;
 import com.example.domain.Position;

@@ -1,6 +1,5 @@
-package com.example;
+package com.example.application;
 
-import com.example.application.LevelSelection;
 import com.example.domain.map.DungeonConfiguration;
 import org.junit.Test;
 

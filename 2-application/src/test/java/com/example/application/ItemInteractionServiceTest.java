@@ -1,12 +1,9 @@
-package com.example;
+package com.example.application;
 
-import com.example.application.DungeonRenderer;
-import com.example.application.ItemInteractionService;
 import com.example.application.stores.ItemStore;
 import com.example.domain.Player;
 import com.example.domain.Position;
 import com.example.domain.item.Consumables;
-import com.example.domain.item.Item;
 import com.example.domain.item.Weapon;
 import org.junit.Before;
 import org.junit.Test;
