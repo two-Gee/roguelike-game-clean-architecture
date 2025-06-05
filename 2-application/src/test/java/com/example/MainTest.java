@@ -21,6 +21,9 @@ import org.junit.runners.Suite;
         GameStateServiceTest.class,
         LevelSelectionTest.class,
         GameServiceTest.class,
+        ItemInteractionServiceTest.class,
+        DungeonGeneratorTest.class,
+
 
 })
 public class MainTest {
