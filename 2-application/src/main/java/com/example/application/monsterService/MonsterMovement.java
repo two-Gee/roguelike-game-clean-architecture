@@ -26,6 +26,12 @@ public class MonsterMovement {
 
     public void move() {
         Position newPos = monster.getNextPosition(player);
+
+        // Check if newPos is null and return early to prevent NullPointerException
+        if (newPos == null) {
+            return;
+        }
+
         for (Monster otherMonster : otherMonsters) {
             if (otherMonster.getPosition().equals(newPos)) {
                 return;
