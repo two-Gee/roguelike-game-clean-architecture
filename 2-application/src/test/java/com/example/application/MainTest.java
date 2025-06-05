@@ -7,6 +7,7 @@ import com.example.application.map.FovCacheTest;
 import com.example.application.map.FovCalculatorTest;
 import com.example.application.map.PositionGeneratorTest;
 import com.example.application.monsterService.MonsterMovementTest;
+import com.example.application.monsterService.MonsterServiceTest;
 import com.example.application.monsterService.monsterMovementStrategies.ApproachMovementStrategyTest;
 import com.example.application.monsterService.monsterMovementStrategies.RandomMovementStrategyTest;
 import com.example.application.monsterService.monsterMovementStrategies.StationaryMovementStrategyTest;
@@ -41,7 +42,8 @@ import org.junit.runners.Suite;
         MonsterMovementTest.class,
         StationaryMovementStrategyTest.class,
         RandomMovementStrategyTest.class,
-        ApproachMovementStrategyTest.class
+        ApproachMovementStrategyTest.class,
+        MonsterServiceTest.class
 })
 public class MainTest {
     // No additional code is needed as this is a test suite definition
