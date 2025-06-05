@@ -6,6 +6,10 @@ import com.example.application.map.DungeonGeneratorTest;
 import com.example.application.map.FovCacheTest;
 import com.example.application.map.FovCalculatorTest;
 import com.example.application.map.PositionGeneratorTest;
+import com.example.application.monsterService.MonsterMovementTest;
+import com.example.application.monsterService.monsterMovementStrategies.ApproachMovementStrategyTest;
+import com.example.application.monsterService.monsterMovementStrategies.RandomMovementStrategyTest;
+import com.example.application.monsterService.monsterMovementStrategies.StationaryMovementStrategyTest;
 import com.example.application.playerService.PlayerAttackTest;
 import com.example.application.playerService.PlayerMovementTest;
 import com.example.application.playerService.PlayerServiceTest;
@@ -34,8 +38,10 @@ import org.junit.runners.Suite;
         GameServiceTest.class,
         ItemInteractionServiceTest.class,
         DungeonGeneratorTest.class,
-
-
+        MonsterMovementTest.class,
+        StationaryMovementStrategyTest.class,
+        RandomMovementStrategyTest.class,
+        ApproachMovementStrategyTest.class
 })
 public class MainTest {
     // No additional code is needed as this is a test suite definition
