@@ -37,7 +37,7 @@ public class OutputUtils {
                             
             Controls:
             - Move with [W] Up, [A] Left, [S] Down, [D] Right.
-            - Pick up weapons by pressing [E] when next to them.
+            - Pick up weapons or consumables by pressing [E] when next to them.
             To confirm the action, press [Enter].
                             
             Choose your challenge:
